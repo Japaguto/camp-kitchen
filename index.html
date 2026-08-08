@@ -25,27 +25,22 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 160px; font-size: 18px; }
 
-  /* HEADER */
   .header { background: var(--dark); color: #fff; padding: 24px 28px 20px; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; gap: 16px; }
   .header h1 { font-size: 26px; font-weight: 700; flex: 1; }
   .header-back { background: none; border: none; color: #fff; font-size: 32px; cursor: pointer; padding: 4px 8px; }
 
-  /* NAV INFERIOR */
   .nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--dark); display: flex; z-index: 100; border-top: 1px solid #333; }
   .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 10px 4px 8px; border: none; background: none; color: #aaa; cursor: pointer; font-size: 13px; gap: 4px; transition: color .2s; }
   .nav-btn.active { color: var(--green2); }
   .nav-btn svg { width: 24px; height: 24px; }
-  
-  /* TELAS */
+
   .tela { display: none; padding: 20px; }
   .tela.ativa { display: block; }
 
-  /* CARDS */
   .card { background: var(--card); border-radius: 16px; padding: 24px; margin-bottom: 16px; box-shadow: var(--shadow); }
   .card-title { font-size: 16px; color: var(--muted); margin-bottom: 6px; }
   .card-value { font-size: 32px; font-weight: 700; color: var(--dark); }
 
-  /* LISTA */
   .item { background: var(--card); border-radius: 14px; padding: 22px 24px; margin-bottom: 12px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 18px; cursor: pointer; transition: transform .1s; }
   .item:active { transform: scale(0.98); }
   .item-icon { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
@@ -54,60 +49,50 @@
   .item-sub { font-size: 15px; color: var(--muted); margin-top: 4px; }
   .item-arrow { color: var(--muted); font-size: 26px; }
 
-  /* STATUS BADGES */
   .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 14px; font-weight: 600; }
   .badge-ok     { background: #e8f5e9; color: #2e7d32; }
   .badge-warn   { background: #fff9c4; color: #f57f17; }
   .badge-danger { background: #ffebee; color: #c62828; }
 
-  /* BUSCA */
   .search-box { background: var(--card); border-radius: 14px; padding: 16px 20px; display: flex; align-items: center; gap: 14px; margin-bottom: 18px; box-shadow: var(--shadow); }
   .search-box input { border: none; outline: none; flex: 1; font-size: 18px; background: transparent; }
   .search-box svg { color: var(--muted); flex-shrink: 0; width: 24px; height: 24px; }
 
-  /* FORMULÁRIOS */
   .form-group { margin-bottom: 20px; }
   .form-label { font-size: 15px; font-weight: 600; color: var(--muted); margin-bottom: 8px; display: block; text-transform: uppercase; letter-spacing: .5px; }
   .form-control { width: 100%; padding: 16px 18px; border: 1.5px solid var(--border); border-radius: 14px; font-size: 18px; background: var(--card); outline: none; transition: border .2s; }
   .form-control:focus { border-color: var(--green); }
   select.form-control { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath fill='%23888' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 18px center; }
 
-  /* BOTÕES */
   .btn { width: 100%; padding: 18px; border: none; border-radius: 14px; font-size: 20px; font-weight: 700; cursor: pointer; transition: opacity .2s; }
   .btn:active { opacity: .8; }
-  .btn-primary  { background: var(--green); color: #fff; }
-  .btn-dark     { background: var(--dark); color: #fff; }
-  .btn-outline  { background: transparent; border: 2px solid var(--green); color: var(--green); }
-  .btn-danger   { background: var(--red); color: #fff; }
+  .btn-primary { background: var(--green); color: #fff; }
+  .btn-dark    { background: var(--dark); color: #fff; }
+  .btn-outline { background: transparent; border: 2px solid var(--green); color: var(--green); }
+  .btn-danger  { background: var(--red); color: #fff; }
   .btn-sm { padding: 12px 20px; font-size: 16px; width: auto; border-radius: 10px; }
 
-  /* TOGGLE */
   .toggle-group { display: flex; background: var(--bg); border-radius: 14px; padding: 6px; gap: 6px; }
   .toggle-opt { flex: 1; padding: 14px; text-align: center; border-radius: 10px; border: none; background: transparent; font-size: 18px; font-weight: 600; cursor: pointer; color: var(--muted); transition: all .2s; }
   .toggle-opt.active { background: var(--card); color: var(--dark); box-shadow: var(--shadow); }
 
-  /* TOAST */
   .toast { position: fixed; bottom: 130px; left: 50%; transform: translateX(-50%); background: var(--dark); color: #fff; padding: 16px 32px; border-radius: 32px; font-size: 18px; font-weight: 600; z-index: 999; opacity: 0; transition: opacity .3s; pointer-events: none; white-space: nowrap; }
   .toast.show { opacity: 1; }
 
-  /* LOADING */
   .loading { position: fixed; inset: 0; background: rgba(255,255,255,.85); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 500; gap: 20px; }
   .loading.hidden { display: none; }
   .spinner { width: 56px; height: 56px; border: 6px solid var(--border); border-top-color: var(--green); border-radius: 50%; animation: spin .8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .loading p { font-size: 18px; color: var(--muted); }
 
-  /* MODAL */
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; display: flex; align-items: flex-end; }
   .modal-overlay.hidden { display: none; }
   .modal { background: var(--card); border-radius: 28px 28px 0 0; padding: 32px 24px 40px; width: 100%; max-height: 90vh; overflow-y: auto; }
   .modal-title { font-size: 24px; font-weight: 700; margin-bottom: 24px; color: var(--dark); }
   .modal-close { float: right; background: none; border: none; font-size: 32px; cursor: pointer; color: var(--muted); margin-top: -6px; }
 
-  /* SEÇÃO */
   .section-title { font-size: 14px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin: 28px 0 14px; }
 
-  /* PAINEL CARDS */
   .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
   .stat-card { background: var(--card); border-radius: 16px; padding: 20px; box-shadow: var(--shadow); }
   .stat-card .label { font-size: 14px; color: var(--muted); font-weight: 600; text-transform: uppercase; margin-bottom: 6px; }
@@ -118,44 +103,34 @@
   .stat-card.red    { border-left: 5px solid var(--red); }
   .stat-card.dark   { border-left: 5px solid var(--dark); }
 
-  /* ALERTA */
   .alerta { display: flex; align-items: center; gap: 16px; padding: 18px 20px; border-radius: 14px; margin-bottom: 10px; }
   .alerta.danger { background: #ffebee; }
   .alerta.warn   { background: #fff9c4; }
   .alerta p { font-size: 16px; font-weight: 600; }
   .alerta span { font-size: 28px; }
 
-  /* BARCODE */
-  #barcode-video { width: 100%; border-radius: 14px; background: #000; }
-  .barcode-box { position: relative; }
-  .barcode-line { position: absolute; top: 50%; left: 10%; right: 10%; height: 3px; background: var(--green); box-shadow: 0 0 8px var(--green); }
+  .hidden { display: none !important; }
 </style>
 </head>
 <body>
 
-<!-- LOADING -->
 <div class="loading hidden" id="loading">
   <div class="spinner"></div>
   <p id="loading-msg">Carregando...</p>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- MODAL GENÉRICO -->
 <div class="modal-overlay hidden" id="modal-overlay">
   <div class="modal" id="modal-content"></div>
 </div>
 
-<!-- HEADER -->
 <div class="header" id="header">
   <button class="header-back hidden" id="btn-back" onclick="voltarTela()">←</button>
   <h1 id="header-title">Camp Kitchen</h1>
 </div>
 
-<!-- ══════════════════════════════════════════ -->
-<!-- TELA: PAINEL -->
-<!-- ══════════════════════════════════════════ -->
+<!-- PAINEL -->
 <div class="tela ativa" id="tela-painel">
   <div class="cards-grid">
     <div class="stat-card green">
@@ -179,10 +154,8 @@
       <div class="sub">abaixo do mínimo</div>
     </div>
   </div>
-
   <div class="section-title">Alertas</div>
   <div id="pan-alertas"></div>
-
   <div class="section-title">Acesso rápido</div>
   <div class="item" onclick="irTela('tela-produtos')">
     <div class="item-icon" style="background:#e8f5e9">📦</div>
@@ -199,9 +172,9 @@
     <div class="item-body"><div class="item-title">Lista de Compras</div><div class="item-sub">Gerar por período e fornecedor</div></div>
     <div class="item-arrow">›</div>
   </div>
-  <div class="item" onclick="irTela('tela-requisicao')">
-    <div class="item-icon" style="background:#f3e5f5">📤</div>
-    <div class="item-body"><div class="item-title">Requisição</div><div class="item-sub">Pedir abastecimento à cozinha</div></div>
+  <div class="item" onclick="irTela('tela-transferencia')">
+    <div class="item-icon" style="background:#e8eaf6">🚚</div>
+    <div class="item-body"><div class="item-title">Transferência</div><div class="item-sub">Mover do estoque para a cozinha</div></div>
     <div class="item-arrow">›</div>
   </div>
   <div class="item" onclick="irTela('tela-balanco')">
@@ -209,39 +182,27 @@
     <div class="item-body"><div class="item-title">Balanço</div><div class="item-sub">Contagem física da cozinha</div></div>
     <div class="item-arrow">›</div>
   </div>
-  <div class="item" onclick="irTela('tela-transferencia')">
-    <div class="item-icon" style="background:#e8eaf6">🚚</div>
-    <div class="item-body"><div class="item-title">Transferência</div><div class="item-sub">Mover do estoque para a cozinha</div></div>
-    <div class="item-arrow">›</div>
-  </div>
 </div>
 
-<!-- ══════════════════════════════════════════ -->
-<!-- TELA: PRODUTOS -->
-<!-- ══════════════════════════════════════════ -->
+<!-- PRODUTOS -->
 <div class="tela" id="tela-produtos">
   <div class="search-box">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     <input type="text" id="busca-ingrediente" placeholder="Buscar ingrediente..." oninput="filtrarIngredientes()">
   </div>
-
   <div style="display:flex;gap:8px;margin-bottom:14px">
     <button class="btn btn-primary btn-sm" onclick="abrirModalNovoIngrediente()">+ Ingrediente extra</button>
     <button class="btn btn-outline btn-sm" onclick="abrirModalFornecedor()">+ Fornecedor</button>
   </div>
-
   <div class="toggle-group" style="margin-bottom:14px" id="filtro-status">
     <button class="toggle-opt active" onclick="setFiltroStatus('todos',this)">Todos</button>
     <button class="toggle-opt" onclick="setFiltroStatus('sem_sku',this)">🟡 Sem SKU</button>
     <button class="toggle-opt" onclick="setFiltroStatus('sem_compra',this)">🟠 Sem compra</button>
   </div>
-
   <div id="lista-ingredientes"></div>
 </div>
 
-<!-- ══════════════════════════════════════════ -->
-<!-- TELA: COMPRAS -->
-<!-- ══════════════════════════════════════════ -->
+<!-- COMPRAS -->
 <div class="tela" id="tela-compras">
   <div class="card" style="margin-bottom:16px">
     <div class="form-group">
@@ -257,9 +218,7 @@
       <div id="compra-sugestoes" style="margin-top:6px"></div>
     </div>
   </div>
-
   <div id="compra-sku-info" class="hidden"></div>
-
   <div id="compra-form" class="hidden">
     <div class="form-group">
       <label class="form-label">Quantidade de embalagens</label>
@@ -288,9 +247,7 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════ -->
-<!-- TELA: REQUISIÇÃO -->
-<!-- ══════════════════════════════════════════ -->
+<!-- REQUISIÇÃO -->
 <div class="tela" id="tela-requisicao">
   <div class="card">
     <div class="form-group">
@@ -302,22 +259,42 @@
   <div id="req-resultado"></div>
 </div>
 
-<!-- ══════════════════════════════════════════ -->
-<!-- TELA: BALANÇO -->
-<!-- ══════════════════════════════════════════ -->
-<div class="tela" id="tela-balanco">
+<!-- TRANSFERÊNCIA -->
+<div class="tela" id="tela-transferencia">
   <div class="card" style="margin-bottom:16px">
-    <p style="font-size:14px;color:var(--muted)">Faça a contagem física dos ingredientes na cozinha. O sistema irá comparar com o consumo teórico esperado.</p>
+    <p style="font-size:14px;color:var(--muted)">Selecione os ingredientes e quantidades para transferir do estoque para a cozinha.</p>
   </div>
-  <div id="lista-balanco"></div>
-  <div id="btn-confirmar-balanco" class="hidden">
-    <button class="btn btn-primary" onclick="confirmarBalanco()">✅ Confirmar Balanço</button>
+  <div id="lista-transferencia"></div>
+  <div id="btn-confirmar-transferencia" class="hidden">
+    <button class="btn btn-primary" onclick="confirmarTransferencia()">🚚 Confirmar Transferência</button>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════ -->
-<!-- TELA: LISTA DE COMPRAS -->
-<!-- ══════════════════════════════════════════ -->
+<!-- BALANÇO -->
+<div class="tela" id="tela-balanco">
+  <div class="toggle-group" style="margin-bottom:16px" id="balanco-tabs">
+    <button class="toggle-opt active" onclick="setBalancoTab('contagem',this)">📋 Contagem</button>
+    <button class="toggle-opt" onclick="setBalancoTab('historico',this)">🕐 Histórico</button>
+  </div>
+  <div id="balanco-contagem">
+    <div class="card">
+      <div class="form-group">
+        <label class="form-label">Data do balanço</label>
+        <input class="form-control" type="date" id="balanco-data">
+      </div>
+      <button class="btn btn-primary" onclick="calcularBalanco()">🔍 Calcular esperado</button>
+    </div>
+    <div id="lista-balanco"></div>
+    <div id="btn-confirmar-balanco" class="hidden">
+      <button class="btn btn-primary" onclick="confirmarBalanco()">✅ Confirmar Balanço</button>
+    </div>
+  </div>
+  <div id="balanco-historico" class="hidden">
+    <div id="lista-historico-balanco"></div>
+  </div>
+</div>
+
+<!-- LISTA DE COMPRAS -->
 <div class="tela" id="tela-lista-compras">
   <div class="card">
     <div class="form-group">
@@ -332,23 +309,8 @@
   </div>
   <div id="lista-compras-resultado"></div>
 </div>
-  
-<!-- ══════════════════════════════════════════ -->
-<!-- TELA: TRANSFERÊNCIA -->
-<!-- ══════════════════════════════════════════ -->
-<div class="tela" id="tela-transferencia">
-  <div class="card" style="margin-bottom:16px">
-    <p style="font-size:14px;color:var(--muted)">Selecione os ingredientes para transferir do estoque para a cozinha.</p>
-  </div>
-  <div id="lista-transferencia"></div>
-  <div id="btn-confirmar-transferencia" class="hidden">
-    <button class="btn btn-primary" onclick="confirmarTransferencia()">🚚 Confirmar Transferência</button>
-  </div>
-</div>
-  
-<!-- ══════════════════════════════════════════ -->
+
 <!-- NAV -->
-<!-- ══════════════════════════════════════════ -->
 <nav class="nav">
   <button class="nav-btn active" id="nav-painel" onclick="irTela('tela-painel')">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
@@ -375,23 +337,13 @@
 <script>
 const API = 'https://script.google.com/macros/s/AKfycbyHYePGf0SpVTunbPjhjGRfTrisEaWfEiB2JtEDJiYz3P8kaRSf5xGp0OttOYAPNsvAhg/exec';
 
-// ── Estado global
 let state = {
-  ingredientes: [],
-  fornecedores: [],
-  skus: [],
-  filtroStatus: 'todos',
-  compraSkuSelecionado: null,
-  compraDestino: 'estoque',
-  balancoItens: [],
-  telaAtual: 'tela-painel',
-  telaAnterior: null,
+  ingredientes: [], fornecedores: [], skus: [],
+  filtroStatus: 'todos', compraSkuSelecionado: null,
+  compraDestino: 'estoque', telaAtual: 'tela-painel', telaAnterior: null,
 };
 
-// ══════════════════════════════════════════
-// UTILITÁRIOS
-// ══════════════════════════════════════════
-
+// ── UTILITÁRIOS
 async function api(rota, method = 'GET', body = null) {
   try {
     if (method === 'GET') {
@@ -399,15 +351,10 @@ async function api(rota, method = 'GET', body = null) {
       const resp = await fetch(url);
       return await resp.json();
     } else {
-      const resp = await fetch(API, {
-        method: 'POST',
-        body:   JSON.stringify({ rota, ...body }),
-      });
+      const resp = await fetch(API, { method: 'POST', body: JSON.stringify({ rota, ...body }) });
       return await resp.json();
     }
-  } catch (e) {
-    return { ok: false, erro: e.message };
-  }
+  } catch (e) { return { ok: false, erro: e.message }; }
 }
 
 function loading(show, msg = 'Carregando...') {
@@ -435,27 +382,32 @@ document.getElementById('modal-overlay').addEventListener('click', e => {
   if (e.target === document.getElementById('modal-overlay')) fecharModal();
 });
 
+function formatarMoeda(v) {
+  return '¥' + Math.round(parseFloat(v) || 0).toLocaleString('ja-JP');
+}
+
+function formatarBase(qtd) {
+  qtd = parseFloat(qtd) || 0;
+  if (qtd >= 1000) return (qtd / 1000).toFixed(2) + ' kg/L';
+  return qtd.toFixed(0) + ' g/mL';
+}
+
 function irTela(id) {
   document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
   document.getElementById(id).classList.add('ativa');
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  const navId = 'nav-' + id.replace('tela-', '');
-  const navBtn = document.getElementById(navId);
+  const navBtn = document.getElementById('nav-' + id.replace('tela-', ''));
   if (navBtn) navBtn.classList.add('active');
   document.getElementById('btn-back').classList.add('hidden');
   state.telaAnterior = state.telaAtual;
   state.telaAtual    = id;
-
   const titulos = {
-    'tela-painel':        'Camp Kitchen',
-    'tela-produtos':      'Produtos',
-    'tela-compras':       'Registrar Compra',
-    'tela-requisicao':    'Requisição',
-    'tela-balanco':       'Balanço de Cozinha',
-    'tela-lista-compras': 'Lista de Compras',
+    'tela-painel': 'Camp Kitchen', 'tela-produtos': 'Produtos',
+    'tela-compras': 'Registrar Compra', 'tela-requisicao': 'Requisição',
+    'tela-balanco': 'Balanço de Cozinha', 'tela-lista-compras': 'Lista de Compras',
+    'tela-transferencia': 'Transferência',
   };
   document.getElementById('header-title').textContent = titulos[id] || 'Camp Kitchen';
-
   if (id === 'tela-painel')        carregarPainel();
   if (id === 'tela-produtos')      carregarIngredientes();
   if (id === 'tela-balanco')       carregarBalanco();
@@ -467,17 +419,9 @@ function voltarTela() {
   if (state.telaAnterior) irTela(state.telaAnterior);
 }
 
-// ══════════════════════════════════════════
-// PAINEL
-// ══════════════════════════════════════════
-
+// ── PAINEL
 async function carregarPainel() {
-  // Mostra dados em cache imediatamente se existirem
-  const [painel, alertas] = await Promise.all([
-    api('painel'),
-    api('alertas'),
-  ]);
-
+  const [painel, alertas] = await Promise.all([api('painel'), api('alertas')]);
   if (painel.ok) {
     const d = painel.dados;
     document.getElementById('pan-cobertura').textContent = d.cobertura_pct + '%';
@@ -485,26 +429,18 @@ async function carregarPainel() {
     document.getElementById('pan-sem-sku').textContent   = d.alertas_sem_sku;
     document.getElementById('pan-criticos').textContent  = d.alertas_criticos;
   }
-
   if (alertas.ok) {
-    const a  = alertas.dados;
+    const a = alertas.dados;
     let html = '';
-    if (a.sem_sku.length > 0)
-      html += `<div class="alerta warn"><span>🟡</span><p>${a.sem_sku.length} ingredientes sem SKU cadastrado</p></div>`;
-    if (a.sem_compra.length > 0)
-      html += `<div class="alerta warn"><span>🟠</span><p>${a.sem_compra.length} ingredientes sem compra registrada</p></div>`;
-    if (a.abaixo_do_minimo.length > 0)
-      html += `<div class="alerta danger"><span>🔴</span><p>${a.abaixo_do_minimo.length} ingredientes abaixo do mínimo</p></div>`;
-    if (!html)
-      html = `<div class="alerta" style="background:var(--light)"><span>✅</span><p>Nenhum alerta no momento</p></div>`;
+    if (a.sem_sku.length > 0)          html += `<div class="alerta warn"><span>🟡</span><p>${a.sem_sku.length} ingredientes sem SKU cadastrado</p></div>`;
+    if (a.sem_compra.length > 0)       html += `<div class="alerta warn"><span>🟠</span><p>${a.sem_compra.length} ingredientes sem compra registrada</p></div>`;
+    if (a.abaixo_do_minimo.length > 0) html += `<div class="alerta danger"><span>🔴</span><p>${a.abaixo_do_minimo.length} ingredientes abaixo do mínimo</p></div>`;
+    if (!html) html = `<div class="alerta" style="background:var(--light)"><span>✅</span><p>Nenhum alerta no momento</p></div>`;
     document.getElementById('pan-alertas').innerHTML = html;
   }
 }
 
-// ══════════════════════════════════════════
-// PRODUTOS
-// ══════════════════════════════════════════
-
+// ── PRODUTOS
 async function carregarIngredientes() {
   loading(true, 'Carregando ingredientes...');
   const [resIng, resForn, resSkus] = await Promise.all([
@@ -513,14 +449,12 @@ async function carregarIngredientes() {
     api('skus'),
   ]);
   loading(false);
-
   if (resIng.ok)  state.ingredientes = resIng.dados;
   if (resForn.ok) state.fornecedores = resForn.dados;
   if (resSkus.ok) state.skus         = resSkus.dados;
-
   renderIngredientes();
 }
-  
+
 function filtrarIngredientes() { renderIngredientes(); }
 
 function setFiltroStatus(status, btn) {
@@ -536,16 +470,11 @@ function renderIngredientes() {
   const skus   = state.skus;
 
   let lista = state.ingredientes.filter(ing => {
-    // Corrige ativo que pode vir como string "TRUE" ou booleano true
     const ativo = ing.ativo === true || ing.ativo === 'TRUE' || ing.ativo === 'true';
     if (!ativo) return false;
-
-    const nome = ing.nome.toString().toLowerCase();
-    if (busca && !nome.includes(busca)) return false;
-
+    if (busca && !ing.nome.toString().toLowerCase().includes(busca)) return false;
     const temSku    = skus.some(s => s.ingredient_id === ing.ingredient_id);
     const temCompra = ing.tem_compra === true || ing.tem_compra === 'TRUE';
-
     if (status === 'sem_sku'    && temSku)    return false;
     if (status === 'sem_compra' && temCompra) return false;
     return true;
@@ -556,11 +485,10 @@ function renderIngredientes() {
     const skusIng   = skus.filter(s => s.ingredient_id === ing.ingredient_id);
     const temSku    = skusIng.length > 0;
     const temCompra = ing.tem_compra === true || ing.tem_compra === 'TRUE';
-    const badge     = !temSku    ? '<span class="badge badge-warn">Sem SKU</span>'
+    const badge     = !temSku ? '<span class="badge badge-warn">Sem SKU</span>'
                     : !temCompra ? '<span class="badge badge-danger">Sem compra</span>'
-                    :              '<span class="badge badge-ok">✅ Ok</span>';
-    const icon      = !temSku ? '🟡' : !temCompra ? '🟠' : '✅';
-
+                    : '<span class="badge badge-ok">✅ Ok</span>';
+    const icon = !temSku ? '🟡' : !temCompra ? '🟠' : '✅';
     html += `
       <div class="item" onclick="abrirIngrediente('${ing.ingredient_id}')">
         <div class="item-icon" style="background:var(--bg);font-size:18px">${icon}</div>
@@ -571,24 +499,21 @@ function renderIngredientes() {
         <div class="item-arrow">›</div>
       </div>`;
   });
-
   if (!html) html = '<p style="text-align:center;color:var(--muted);padding:32px">Nenhum ingrediente encontrado</p>';
   document.getElementById('lista-ingredientes').innerHTML = html;
 }
 
 function abrirIngrediente(ingId) {
-  const ing    = state.ingredientes.find(i => i.ingredient_id === ingId);
-  const skus   = state.skus.filter(s => s.ingredient_id === ingId);
-  const forns  = state.fornecedores;
-
+  const ing   = state.ingredientes.find(i => i.ingredient_id === ingId);
+  const skus  = state.skus.filter(s => s.ingredient_id === ingId);
+  const forns = state.fornecedores;
   let skusHtml = skus.map(s => {
     const forn = forns.find(f => f.fornecedor_id === s.fornecedor_id);
-    return `
-      <div class="card" style="margin-bottom:8px">
-        <div style="font-weight:700">${s.marca}</div>
-        <div style="font-size:13px;color:var(--muted)">${s.qtd_embalagem} ${s.unidade_embalagem} · ${forn ? forn.nome : '—'}</div>
-        ${s.codigo_barras ? `<div style="font-size:12px;color:var(--muted)">🔍 ${s.codigo_barras}</div>` : ''}
-      </div>`;
+    return `<div class="card" style="margin-bottom:8px">
+      <div style="font-weight:700">${s.marca}</div>
+      <div style="font-size:13px;color:var(--muted)">${s.qtd_embalagem} ${s.unidade_embalagem} · ${forn ? forn.nome : '—'}</div>
+      ${s.codigo_barras ? `<div style="font-size:12px;color:var(--muted)">🔍 ${s.codigo_barras}</div>` : ''}
+    </div>`;
   }).join('') || '<p style="color:var(--muted);font-size:13px">Nenhum SKU cadastrado ainda.</p>';
 
   abrirModal(`
@@ -606,12 +531,8 @@ function abrirModalNovoIngrediente() {
   abrirModal(`
     <button class="modal-close" onclick="fecharModal()">×</button>
     <div class="modal-title">Novo Ingrediente</div>
-    <div class="form-group">
-      <label class="form-label">Nome</label>
-      <input class="form-control" id="ni-nome" placeholder="Ex: Tahini">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Unidade base</label>
+    <div class="form-group"><label class="form-label">Nome</label><input class="form-control" id="ni-nome" placeholder="Ex: Tahini"></div>
+    <div class="form-group"><label class="form-label">Unidade base</label>
       <select class="form-control" id="ni-unidade">
         <option value="g">g / kg (peso)</option>
         <option value="mL">mL / L (volume)</option>
@@ -625,62 +546,35 @@ function abrirModalNovoIngrediente() {
 async function salvarNovoIngrediente() {
   const nome    = document.getElementById('ni-nome').value.trim();
   const unidade = document.getElementById('ni-unidade').value;
-  if (!nome) { toast('⚠️ Digite o nome do ingrediente'); return; }
-
+  if (!nome) { toast('⚠️ Digite o nome'); return; }
   loading(true, 'Salvando...');
   const res = await api('ingredientes', 'POST', { nome, unidade_base: unidade });
   loading(false);
-
-  if (res.ok) {
-    toast('✅ Ingrediente cadastrado!');
-    fecharModal();
-    carregarIngredientes();
-  } else {
-    toast('❌ Erro: ' + res.erro);
-  }
+  if (res.ok) { toast('✅ Ingrediente cadastrado!'); fecharModal(); carregarIngredientes(); }
+  else toast('❌ Erro: ' + res.erro);
 }
 
 function abrirModalNovoSku(ingId) {
-  const ing   = state.ingredientes.find(i => i.ingredient_id === ingId);
-  const forns = state.fornecedores;
-
-  const optsForns = forns.map(f => `<option value="${f.fornecedor_id}">${f.nome}</option>`).join('');
-
+  const ing        = state.ingredientes.find(i => i.ingredient_id === ingId);
+  const optsForns  = state.fornecedores.map(f => `<option value="${f.fornecedor_id}">${f.nome}</option>`).join('');
   abrirModal(`
     <button class="modal-close" onclick="fecharModal()">×</button>
     <div class="modal-title">Novo SKU — ${ing ? ing.nome : ''}</div>
     <input type="hidden" id="sku-ing-id" value="${ingId}">
-    <div class="form-group">
-      <label class="form-label">Marca</label>
-      <input class="form-control" id="sku-marca" placeholder="Ex: Kikkoman">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Fornecedor</label>
-      <select class="form-control" id="sku-forn">
-        <option value="">Selecione...</option>
-        ${optsForns}
-      </select>
+    <div class="form-group"><label class="form-label">Marca</label><input class="form-control" id="sku-marca" placeholder="Ex: Kikkoman"></div>
+    <div class="form-group"><label class="form-label">Fornecedor</label>
+      <select class="form-control" id="sku-forn"><option value="">Selecione...</option>${optsForns}</select>
     </div>
     <div style="display:flex;gap:10px">
-      <div class="form-group" style="flex:1">
-        <label class="form-label">Qtd embalagem</label>
-        <input class="form-control" type="number" id="sku-qtd" placeholder="Ex: 5">
-      </div>
-      <div class="form-group" style="flex:1">
-        <label class="form-label">Unidade</label>
+      <div class="form-group" style="flex:1"><label class="form-label">Qtd embalagem</label><input class="form-control" type="number" id="sku-qtd" placeholder="Ex: 5"></div>
+      <div class="form-group" style="flex:1"><label class="form-label">Unidade</label>
         <select class="form-control" id="sku-unidade">
-          <option value="g">g</option>
-          <option value="kg">kg</option>
-          <option value="mL">mL</option>
-          <option value="L">L</option>
-          <option value="unidade">unidade</option>
+          <option value="g">g</option><option value="kg">kg</option>
+          <option value="mL">mL</option><option value="L">L</option><option value="unidade">unidade</option>
         </select>
       </div>
     </div>
-    <div class="form-group">
-      <label class="form-label">Preço por embalagem</label>
-      <input class="form-control" type="number" id="sku-preco" step="0.01" placeholder="0.00">
-    </div>
+    <div class="form-group"><label class="form-label">Preço por embalagem</label><input class="form-control" type="number" id="sku-preco" step="0.01" placeholder="0.00"></div>
     <div class="form-group">
       <label class="form-label">📷 Código de barras</label>
       <div style="display:flex;gap:8px">
@@ -694,45 +588,31 @@ function abrirModalNovoSku(ingId) {
 
 async function salvarNovoSku() {
   const payload = {
-    ingredient_id:     document.getElementById('sku-ing-id').value,
-    marca:             document.getElementById('sku-marca').value.trim(),
-    fornecedor_id:     document.getElementById('sku-forn').value,
-    qtd_embalagem:     document.getElementById('sku-qtd').value,
+    ingredient_id: document.getElementById('sku-ing-id').value,
+    marca: document.getElementById('sku-marca').value.trim(),
+    fornecedor_id: document.getElementById('sku-forn').value,
+    qtd_embalagem: document.getElementById('sku-qtd').value,
     unidade_embalagem: document.getElementById('sku-unidade').value,
-    preco_unitario:    document.getElementById('sku-preco').value,
-    codigo_barras:     document.getElementById('sku-barcode').value.trim(),
+    preco_unitario: document.getElementById('sku-preco').value,
+    codigo_barras: document.getElementById('sku-barcode').value.trim(),
   };
-
   if (!payload.marca || !payload.qtd_embalagem) { toast('⚠️ Preencha marca e quantidade'); return; }
-
   loading(true, 'Salvando SKU...');
   const res = await api('skus', 'POST', payload);
   loading(false);
-
-  if (res.ok) {
-    toast('✅ SKU cadastrado!');
-    fecharModal();
-    carregarIngredientes();
-  } else {
-    toast('❌ Erro: ' + res.erro);
-  }
+  if (res.ok) { toast('✅ SKU cadastrado!'); fecharModal(); carregarIngredientes(); }
+  else toast('❌ Erro: ' + res.erro);
 }
 
 function abrirModalFornecedor() {
   abrirModal(`
     <button class="modal-close" onclick="fecharModal()">×</button>
     <div class="modal-title">Novo Fornecedor</div>
-    <div class="form-group">
-      <label class="form-label">Nome</label>
-      <input class="form-control" id="forn-nome" placeholder="Ex: Tamimi Markets">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Tipo</label>
+    <div class="form-group"><label class="form-label">Nome</label><input class="form-control" id="forn-nome" placeholder="Ex: Tamimi Markets"></div>
+    <div class="form-group"><label class="form-label">Tipo</label>
       <select class="form-control" id="forn-tipo">
-        <option value="supermercado">Supermercado</option>
-        <option value="atacado">Atacado</option>
-        <option value="distribuidor">Distribuidor</option>
-        <option value="outro">Outro</option>
+        <option value="supermercado">Supermercado</option><option value="atacado">Atacado</option>
+        <option value="distribuidor">Distribuidor</option><option value="outro">Outro</option>
       </select>
     </div>
     <button class="btn btn-primary" onclick="salvarFornecedor()">Salvar</button>
@@ -742,61 +622,42 @@ function abrirModalFornecedor() {
 async function salvarFornecedor() {
   const nome = document.getElementById('forn-nome').value.trim();
   const tipo = document.getElementById('forn-tipo').value;
-  if (!nome) { toast('⚠️ Digite o nome do fornecedor'); return; }
-
+  if (!nome) { toast('⚠️ Digite o nome'); return; }
   loading(true, 'Salvando...');
   const res = await api('fornecedores', 'POST', { nome, tipo });
   loading(false);
-
-  if (res.ok) {
-    toast('✅ Fornecedor cadastrado!');
-    fecharModal();
-    carregarIngredientes();
-  } else {
-    toast('❌ Erro: ' + res.erro);
-  }
+  if (res.ok) { toast('✅ Fornecedor cadastrado!'); fecharModal(); carregarIngredientes(); }
+  else toast('❌ Erro: ' + res.erro);
 }
 
-// ══════════════════════════════════════════
-// COMPRAS
-// ══════════════════════════════════════════
-
+// ── COMPRAS
 async function buscarSkuPorBarcode() {
   const barcode = document.getElementById('compra-barcode').value.trim();
   if (!barcode) return;
-
   loading(true, 'Buscando produto...');
   const res = await api('skus', 'GET', { barcode });
   loading(false);
-
-  if (res.ok && res.dados.length > 0) {
-    selecionarSkuParaCompra(res.dados[0]);
-  } else {
-    toast('⚠️ Produto não encontrado. Verifique o código ou busque pelo nome.');
-  }
+  if (res.ok && res.dados.length > 0) selecionarSkuParaCompra(res.dados[0]);
+  else toast('⚠️ Produto não encontrado.');
 }
 
 function buscarSkuPorNome() {
   const busca = (document.getElementById('compra-busca-nome').value || '').toLowerCase();
   if (busca.length < 2) { document.getElementById('compra-sugestoes').innerHTML = ''; return; }
-
   const resultados = state.skus.filter(s => {
     const ing = state.ingredientes.find(i => i.ingredient_id === s.ingredient_id);
     return ing && ing.nome.toLowerCase().includes(busca);
   }).slice(0, 5);
-
   let html = '';
   resultados.forEach(s => {
     const ing  = state.ingredientes.find(i => i.ingredient_id === s.ingredient_id);
     const forn = state.fornecedores.find(f => f.fornecedor_id === s.fornecedor_id);
-    html += `
-      <div class="item" style="margin-bottom:6px" onclick="selecionarSkuParaCompra(${JSON.stringify(s).replace(/"/g, '&quot;')})">
-        <div class="item-body">
-          <div class="item-title">${ing ? ing.nome : ''} — ${s.marca}</div>
-          <div class="item-sub">${s.qtd_embalagem} ${s.unidade_embalagem} · ${forn ? forn.nome : '—'}</div>
-        </div>
-        <div class="item-arrow">›</div>
-      </div>`;
+    html += `<div class="item" style="margin-bottom:6px" onclick="selecionarSkuParaCompra(${JSON.stringify(s).replace(/"/g,'&quot;')})">
+      <div class="item-body">
+        <div class="item-title">${ing ? ing.nome : ''} — ${s.marca}</div>
+        <div class="item-sub">${s.qtd_embalagem} ${s.unidade_embalagem} · ${forn ? forn.nome : '—'}</div>
+      </div><div class="item-arrow">›</div>
+    </div>`;
   });
   document.getElementById('compra-sugestoes').innerHTML = html;
 }
@@ -805,11 +666,9 @@ function selecionarSkuParaCompra(sku) {
   state.compraSkuSelecionado = sku;
   const ing  = state.ingredientes.find(i => i.ingredient_id === sku.ingredient_id);
   const forn = state.fornecedores.find(f => f.fornecedor_id === sku.fornecedor_id);
-
   document.getElementById('compra-sugestoes').innerHTML = '';
   document.getElementById('compra-busca-nome').value    = '';
-
-  document.getElementById('compra-sku-info').innerHTML = `
+  document.getElementById('compra-sku-info').innerHTML  = `
     <div class="card" style="background:var(--light);margin-bottom:16px">
       <div style="font-weight:700;font-size:16px">${ing ? ing.nome : ''}</div>
       <div style="font-size:13px;color:var(--muted)">${sku.marca} · ${sku.qtd_embalagem} ${sku.unidade_embalagem}</div>
@@ -845,68 +704,48 @@ async function confirmarCompra() {
   const qtd   = parseFloat(document.getElementById('compra-qtd').value);
   const preco = parseFloat(document.getElementById('compra-preco').value);
   if (!qtd || qtd <= 0) { toast('⚠️ Informe a quantidade'); return; }
-
   loading(true, 'Registrando compra...');
   const res = await api('compras', 'POST', {
-    sku_id:         state.compraSkuSelecionado.sku_id,
-    qtd_embalagens: qtd,
-    preco_pago_unit: preco || 0,
-    destino:        state.compraDestino,
-    nota_fiscal:    document.getElementById('compra-nf').value,
-    usuario:        'app',
+    sku_id: state.compraSkuSelecionado.sku_id,
+    qtd_embalagens: qtd, preco_pago_unit: preco || 0,
+    destino: state.compraDestino,
+    nota_fiscal: document.getElementById('compra-nf').value,
+    usuario: 'app',
   });
   loading(false);
-
   if (res.ok) {
     toast('✅ Compra registrada! ' + (res.dados.qtd_total || ''));
     limparSkuCompra();
-    document.getElementById('compra-qtd').value  = 1;
+    document.getElementById('compra-qtd').value   = 1;
     document.getElementById('compra-preco').value = '';
     document.getElementById('compra-nf').value    = '';
-  } else {
-    toast('❌ Erro: ' + res.erro);
-  }
+  } else toast('❌ Erro: ' + res.erro);
 }
 
-// ══════════════════════════════════════════
-// REQUISIÇÃO
-// ══════════════════════════════════════════
-
+// ── REQUISIÇÃO
 async function calcularRequisicao() {
   const dataFim = document.getElementById('req-data-fim').value;
   if (!dataFim) { toast('⚠️ Selecione a data'); return; }
-
-  loading(true, 'Calculando necessidade...');
+  loading(true, 'Calculando...');
   const res = await api('requisicoes/calcular', 'POST', { data_necessidade: dataFim });
   loading(false);
-
   if (!res.ok) { toast('❌ Erro: ' + res.erro); return; }
-
   const itens = res.dados;
   if (!itens || itens.length === 0) {
-    document.getElementById('req-resultado').innerHTML =
-      '<div class="card" style="text-align:center;color:var(--muted)">✅ Estoque suficiente para o período</div>';
+    document.getElementById('req-resultado').innerHTML = '<div class="card" style="text-align:center;color:var(--muted)">✅ Estoque suficiente para o período</div>';
     return;
   }
-
   let html = '<div class="section-title">Itens necessários</div>';
   itens.forEach(item => {
-    const ing    = state.ingredientes.find(i => i.ingredient_id === item.ingredient_id);
-    const nome   = ing ? ing.nome : item.ingredient_id;
-    const cor    = item.sugerido < item.falta ? 'var(--red)' : 'var(--green)';
-    html += `
-      <div class="card" style="margin-bottom:8px">
-        <div style="font-weight:700">${nome}</div>
-        <div style="font-size:12px;color:var(--muted);margin:4px 0">
-          Necessário: ${formatarBase(item.necessario)} · Disponível em estoque: ${formatarBase(item.disponivel)}
-        </div>
-        <div style="font-size:14px;font-weight:700;color:${cor}">
-          Transferir: ${formatarBase(item.sugerido)}
-          ${item.sugerido < item.falta ? ' ⚠️ Estoque insuficiente' : ''}
-        </div>
-      </div>`;
+    const ing  = state.ingredientes.find(i => i.ingredient_id === item.ingredient_id);
+    const nome = ing ? ing.nome : item.ingredient_id;
+    const cor  = item.sugerido < item.falta ? 'var(--red)' : 'var(--green)';
+    html += `<div class="card" style="margin-bottom:8px">
+      <div style="font-weight:700">${nome}</div>
+      <div style="font-size:12px;color:var(--muted);margin:4px 0">Necessário: ${formatarBase(item.necessario)} · Disponível: ${formatarBase(item.disponivel)}</div>
+      <div style="font-size:14px;font-weight:700;color:${cor}">Transferir: ${formatarBase(item.sugerido)} ${item.sugerido < item.falta ? '⚠️ Estoque insuficiente' : ''}</div>
+    </div>`;
   });
-
   html += `<button class="btn btn-primary" style="margin-top:8px" onclick="confirmarRequisicao(${JSON.stringify(itens).replace(/"/g,'&quot;')}, '${dataFim}')">📤 Confirmar Requisição</button>`;
   document.getElementById('req-resultado').innerHTML = html;
 }
@@ -915,12 +754,7 @@ async function confirmarRequisicao(itens, dataFim) {
   loading(true, 'Enviando requisição...');
   for (const item of itens) {
     if (item.sugerido > 0) {
-      await api('requisicoes', 'POST', {
-        ingredient_id:       item.ingredient_id,
-        qtd_solicitada_base: item.sugerido,
-        data_necessidade:    dataFim,
-        usuario:             'app',
-      });
+      await api('requisicoes', 'POST', { ingredient_id: item.ingredient_id, qtd_solicitada_base: item.sugerido, data_necessidade: dataFim, usuario: 'app' });
     }
   }
   loading(false);
@@ -929,285 +763,11 @@ async function confirmarRequisicao(itens, dataFim) {
   document.getElementById('req-data-fim').value      = '';
 }
 
-// ══════════════════════════════════════════
-// BALANÇO
-// ══════════════════════════════════════════
-
-async function carregarBalanco() {
-  loading(true, 'Carregando saldos...');
-  const res = await api('saldos');
-  loading(false);
-
-  if (!res.ok) { toast('❌ Erro ao carregar saldos'); return; }
-
-  const saldos = res.dados;
-  state.balancoItens = [];
-
-  let html = '';
-  Object.entries(saldos).forEach(([ingId, saldo]) => {
-    if (saldo.cozinha <= 0) return;
-    const ing  = state.ingredientes.find(i => i.ingredient_id === ingId);
-    if (!ing) return;
-
-    state.balancoItens.push({ ingredient_id: ingId, esperado: saldo.cozinha });
-
-    html += `
-      <div class="card" style="margin-bottom:10px">
-        <div style="font-weight:700;margin-bottom:8px">${ing.nome}</div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Esperado: ${formatarBase(saldo.cozinha)}</div>
-        <div style="display:flex;align-items:center;gap:10px">
-          <input class="form-control" type="number" step="0.1" placeholder="Qtd contada (${ing.unidade_base})"
-            id="bal-${ingId}" style="flex:1" oninput="atualizarDifBalanco('${ingId}', ${saldo.cozinha}, '${ing.unidade_base}')">
-          <span id="bal-dif-${ingId}" style="font-size:13px;font-weight:700;min-width:60px;text-align:right"></span>
-        </div>
-      </div>`;
-  });
-
-  if (!html) html = '<p style="text-align:center;color:var(--muted);padding:32px">Nenhum item em cozinha no momento</p>';
-  else document.getElementById('btn-confirmar-balanco').classList.remove('hidden');
-
-  document.getElementById('lista-balanco').innerHTML = html;
-}
-
-function atualizarDifBalanco(ingId, esperado, unidade) {
-  const val = parseFloat(document.getElementById('bal-' + ingId).value);
-  const el  = document.getElementById('bal-dif-' + ingId);
-  if (isNaN(val)) { el.textContent = ''; return; }
-  const dif = val - esperado;
-  el.textContent = (dif >= 0 ? '+' : '') + dif.toFixed(1) + ' ' + unidade;
-  el.style.color = dif === 0 ? 'var(--green)' : dif > 0 ? 'var(--orange)' : 'var(--red)';
-}
-
-async function confirmarBalanco() {
-  const itens = state.balancoItens.filter(item => {
-    const val = document.getElementById('bal-' + item.ingredient_id);
-    return val && val.value !== '';
-  });
-
-  if (itens.length === 0) { toast('⚠️ Preencha ao menos um item'); return; }
-
-  loading(true, 'Salvando balanço...');
-  for (const item of itens) {
-    const val = parseFloat(document.getElementById('bal-' + item.ingredient_id).value);
-    await api('balancos', 'POST', {
-      ingredient_id:    item.ingredient_id,
-      qtd_contada_base: val,
-      usuario:          'app',
-    });
-  }
-  loading(false);
-  toast('✅ Balanço salvo!');
-  carregarBalanco();
-}
-
-// ══════════════════════════════════════════
-// LISTA DE COMPRAS
-// ══════════════════════════════════════════
-
-function iniciarListaCompras() {
-  const hoje  = new Date();
-  const fim   = new Date();
-  fim.setDate(fim.getDate() + 7);
-  document.getElementById('lc-inicio').value = hoje.toISOString().split('T')[0];
-  document.getElementById('lc-fim').value    = fim.toISOString().split('T')[0];
-}
-
-async function gerarListaCompras() {
-  const inicio = document.getElementById('lc-inicio').value;
-  const fim    = document.getElementById('lc-fim').value;
-  if (!inicio || !fim) { toast('⚠️ Selecione o período'); return; }
-
-  loading(true, 'Gerando lista de compras...');
-  const res = await api('lista-compras', 'GET', { inicio, fim });
-  loading(false);
-
-  if (!res.ok) { toast('❌ Erro: ' + res.erro); return; }
-
-  const por_fornecedor = res.dados.por_fornecedor || [];
-  const sem_cadastro   = res.dados.sem_cadastro   || [];
-  const total_geral    = res.dados.total_geral     || 0;
-
-  if (por_fornecedor.length === 0 && sem_cadastro.length === 0) {
-    document.getElementById('lista-compras-resultado').innerHTML =
-      '<div class="card" style="text-align:center;color:var(--muted)">✅ Estoque suficiente para o período</div>';
-    return;
-  }
-
-  let html = '';
-
-  // Itens com SKU agrupados por fornecedor
-  if (por_fornecedor.length > 0) {
-    por_fornecedor.forEach(forn => {
-      html += `<div class="section-title">🏪 ${forn.fornecedor}</div>
-               <div class="card" style="margin-bottom:4px">`;
-      forn.itens.forEach(item => {
-        html += `
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">
-            <div>
-              <div style="font-weight:600;font-size:15px">${item.ingrediente}</div>
-              <div style="font-size:12px;color:var(--muted)">${item.marca} · ${item.embalagem} · ${item.qtd_embalagens} emb.</div>
-            </div>
-            <div style="text-align:right;font-weight:700">${formatarMoeda(item.valor_estimado)}</div>
-          </div>`;
-      });
-      html += `
-        <div style="display:flex;justify-content:space-between;padding:10px 0 2px;font-weight:700">
-          <span>Subtotal</span><span>${formatarMoeda(forn.subtotal)}</span>
-        </div>
-      </div>`;
-    });
-
-    html += `
-      <div class="card" style="background:var(--dark);color:#fff;margin-top:8px;margin-bottom:16px">
-        <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:800">
-          <span>TOTAL GERAL</span><span>${formatarMoeda(total_geral)}</span>
-        </div>
-      </div>`;
-  }
-
-  // Itens sem SKU cadastrado
-  if (sem_cadastro.length > 0) {
-    html += `
-      <div class="section-title" style="color:var(--orange)">⚠️ Sem SKU cadastrado (${sem_cadastro.length})</div>
-      <div class="card" style="border-left:4px solid var(--orange);margin-bottom:4px">
-        <p style="font-size:13px;color:var(--muted);margin-bottom:12px">
-          Estes ingredientes precisam ser comprados mas ainda não têm fornecedor ou embalagem cadastrada.
-        </p>`;
-    sem_cadastro.forEach(item => {
-      html += `
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">
-          <div style="font-weight:600;font-size:15px">${item.ingrediente}</div>
-          <div style="font-weight:700;color:var(--orange)">${item.falta_fmt}</div>
-        </div>`;
-    });
-    html += `</div>`;
-  }
-
-  document.getElementById('lista-compras-resultado').innerHTML = html;
-}
-// ══════════════════════════════════════════
-// LEITOR DE CÓDIGO DE BARRAS
-// ══════════════════════════════════════════
-
-let scannerStream = null;
-
-function abrirScanner(campoDestino, callback) {
-  let lido = false;
-  
-  // Guarda o conteúdo do modal atual antes de abrir o scanner
-  const modalAnterior = document.getElementById('modal-content').innerHTML;
-  const modalEstaAberto = !document.getElementById('modal-overlay').classList.contains('hidden');
-
-  // Substitui o conteúdo do modal pelo scanner (sem fechar o modal)
-  document.getElementById('modal-content').innerHTML = `
-    <button class="modal-close" onclick="fecharScanner(${modalEstaAberto})">×</button>
-    <div class="modal-title">📷 Escanear código</div>
-    <div id="scanner-container" style="width:100%;border-radius:14px;overflow:hidden;background:#000;min-height:250px"></div>
-    <p style="text-align:center;color:var(--muted);font-size:16px;margin-top:16px">Aponte para o código de barras</p>
-    <button class="btn btn-outline" style="margin-top:12px" onclick="fecharScanner(${modalEstaAberto})">Cancelar</button>
-  `;
-  document.getElementById('modal-overlay').classList.remove('hidden');
-
-  Quagga.init({
-    inputStream: {
-      name: 'Live',
-      type: 'LiveStream',
-      target: document.getElementById('scanner-container'),
-      constraints: {
-        facingMode: 'environment',
-        width:  { ideal: 1280 },
-        height: { ideal: 720 },
-      },
-    },
-    decoder: {
-      readers: [
-        'ean_reader',
-        'ean_8_reader',
-        'code_128_reader',
-        'upc_reader',
-        'upc_e_reader',
-      ],
-    },
-    locate: true,
-  }, err => {
-    if (err) {
-      _fecharScannerStream();
-      // Restaura modal anterior
-      if (modalEstaAberto) {
-        document.getElementById('modal-content').innerHTML = modalAnterior;
-      } else {
-        fecharModal();
-      }
-      toast('❌ Erro ao acessar câmera: ' + err);
-      return;
-    }
-    Quagga.start();
-  });
-
-  Quagga.onDetected(result => {
-    if (lido) return;
-    const codigo = result.codeResult.code;
-    if (!codigo) return;
-    lido = true;
-
-    _fecharScannerStream();
-
-    // Restaura o modal anterior ou fecha
-    if (modalEstaAberto) {
-      document.getElementById('modal-content').innerHTML = modalAnterior;
-    } else {
-      document.getElementById('modal-overlay').classList.add('hidden');
-    }
-
-    // Preenche o campo
-    setTimeout(() => {
-      const campo = document.getElementById(campoDestino);
-      if (campo) {
-        campo.value = codigo;
-        toast('✅ Código lido: ' + codigo);
-      }
-      if (typeof callback === 'function') callback();
-    }, 100);
-  });
-}
-
-function _fecharScannerStream() {
-  try { Quagga.stop(); } catch(_) {}
-  if (scannerStream) {
-    scannerStream.getTracks().forEach(t => t.stop());
-    scannerStream = null;
-  }
-}
-
-function fecharScanner(restaurarModal = false) {
-  _fecharScannerStream();
-  if (!restaurarModal) {
-    fecharModal();
-  }
-}
-// ══════════════════════════════════════════
-// FORMATADORES
-// ══════════════════════════════════════════
-
-function formatarMoeda(v) {
-  return '¥' + Math.round(parseFloat(v) || 0).toLocaleString('ja-JP');
-}
-
-function formatarBase(qtd) {
-  qtd = parseFloat(qtd) || 0;
-  if (qtd >= 1000) return (qtd / 1000).toFixed(2) + ' kg/L';
-  return qtd.toFixed(0) + ' g/mL';
-}
-
-// ══════════════════════════════════════════
-// TRANSFERÊNCIA
-// ══════════════════════════════════════════
-
+// ── TRANSFERÊNCIA
 async function carregarTransferencia() {
   loading(true, 'Carregando saldos...');
   const res = await api('saldos');
   loading(false);
-
   if (!res.ok) { toast('❌ Erro ao carregar saldos'); return; }
 
   const saldos = res.dados;
@@ -1217,15 +777,12 @@ async function carregarTransferencia() {
   Object.entries(saldos).forEach(([ingId, saldo]) => {
     const estoque = parseFloat(saldo.estoque) || 0;
     if (estoque <= 0) return;
-
     const ing = state.ingredientes.find(i => i.ingredient_id === ingId);
     if (!ing) return;
-
     temItens = true;
     const estoqueFmt = estoque >= 1000
       ? (estoque / 1000).toFixed(2) + (ing.unidade_base === 'mL' ? ' L' : ' kg')
       : estoque.toFixed(0) + ' ' + ing.unidade_base;
-
     html += `
       <div class="card" style="margin-bottom:10px">
         <div style="font-weight:700;margin-bottom:4px">${ing.nome}</div>
@@ -1240,12 +797,8 @@ async function carregarTransferencia() {
       </div>`;
   });
 
-  if (!html) {
-    html = '<p style="text-align:center;color:var(--muted);padding:32px">Nenhum item em estoque no momento</p>';
-  } else {
-    document.getElementById('btn-confirmar-transferencia').classList.remove('hidden');
-  }
-
+  if (!html) html = '<p style="text-align:center;color:var(--muted);padding:32px">Nenhum item em estoque no momento</p>';
+  else document.getElementById('btn-confirmar-transferencia').classList.remove('hidden');
   document.getElementById('lista-transferencia').innerHTML = html;
 }
 
@@ -1255,43 +808,29 @@ function validarTransferencia(ingId, estoqueMax) {
   if (val > estoqueMax) {
     el.textContent = '⚠️ Excede estoque';
     document.getElementById('trf-' + ingId).value = estoqueMax;
-  } else {
-    el.textContent = '';
-  }
+  } else { el.textContent = ''; }
 }
 
 async function confirmarTransferencia() {
   const saldosRes = await api('saldos');
   if (!saldosRes.ok) return;
-
-  const saldos = saldosRes.dados;
-  const itens  = [];
-
-  Object.entries(saldos).forEach(([ingId, saldo]) => {
+  const itens = [];
+  Object.entries(saldosRes.dados).forEach(([ingId, saldo]) => {
     const input = document.getElementById('trf-' + ingId);
     if (!input || !input.value) return;
     const val = parseFloat(input.value) || 0;
     if (val <= 0) return;
     itens.push({ ingredient_id: ingId, qtd: val });
   });
-
   if (itens.length === 0) { toast('⚠️ Informe pelo menos uma quantidade'); return; }
-
   loading(true, 'Registrando transferências...');
   for (const item of itens) {
-    await api('transferencias/envio', 'POST', {
-      ingredient_id:    item.ingredient_id,
-      qtd_enviada_base: item.qtd,
-      usuario:          'app',
+    const resEnvio = await api('transferencias/envio', 'POST', {
+      ingredient_id: item.ingredient_id, qtd_enviada_base: item.qtd, usuario: 'app',
     });
-    // Confirma recebimento automaticamente
-    const resEnvio = await api('transferencias', 'GET');
-    if (resEnvio.ok && resEnvio.dados.length > 0) {
-      const ultima = resEnvio.dados[resEnvio.dados.length - 1];
+    if (resEnvio.ok && resEnvio.dados.transf_id) {
       await api('transferencias/recebimento', 'POST', {
-        transf_id:         ultima.transf_id,
-        qtd_recebida_base: item.qtd,
-        usuario:           'app',
+        transf_id: resEnvio.dados.transf_id, qtd_recebida_base: item.qtd, usuario: 'app',
       });
     }
   }
@@ -1299,11 +838,283 @@ async function confirmarTransferencia() {
   toast('✅ Transferência realizada!');
   carregarTransferencia();
 }
-  
-// ══════════════════════════════════════════
-// INICIALIZAÇÃO
-// ══════════════════════════════════════════
 
+// ── BALANÇO
+function setBalancoTab(tab, btn) {
+  document.querySelectorAll('#balanco-tabs .toggle-opt').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('balanco-contagem').classList.toggle('hidden', tab !== 'contagem');
+  document.getElementById('balanco-historico').classList.toggle('hidden', tab !== 'historico');
+  if (tab === 'historico') carregarHistoricoBalanco();
+}
+
+async function carregarBalanco() {
+  const hoje = new Date().toISOString().split('T')[0];
+  document.getElementById('balanco-data').value = hoje;
+  document.getElementById('lista-balanco').innerHTML = '';
+  document.getElementById('btn-confirmar-balanco').classList.add('hidden');
+}
+
+async function calcularBalanco() {
+  const data = document.getElementById('balanco-data').value;
+  if (!data) { toast('⚠️ Selecione uma data'); return; }
+  loading(true, 'Calculando saldos...');
+  const res = await api('saldos', 'GET', { data });
+  loading(false);
+  if (!res.ok) { toast('❌ Erro ao carregar saldos'); return; }
+
+  const saldos = res.dados;
+  let html     = '';
+  let temItens = false;
+
+  Object.entries(saldos).forEach(([ingId, saldo]) => {
+    const cozinha = parseFloat(saldo.cozinha) || 0;
+    if (cozinha <= 0) return;
+    const ing = state.ingredientes.find(i => i.ingredient_id === ingId);
+    if (!ing) return;
+    temItens = true;
+    const esperadoFmt = cozinha >= 1000
+      ? (cozinha / 1000).toFixed(2) + (ing.unidade_base === 'mL' ? ' L' : ' kg')
+      : cozinha.toFixed(1) + ' ' + ing.unidade_base;
+    html += `
+      <div class="card" style="margin-bottom:10px">
+        <div style="font-weight:700;margin-bottom:4px">${ing.nome}</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Esperado ao final do dia: <strong>${esperadoFmt}</strong></div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+          <input class="form-control" type="number" step="0.1" min="0"
+            placeholder="Qtd contada (${ing.unidade_base})"
+            id="bal-${ingId}" style="flex:1"
+            oninput="atualizarDifBalanco('${ingId}', ${cozinha}, '${ing.unidade_base}')">
+          <span id="bal-dif-${ingId}" style="font-size:13px;font-weight:700;min-width:70px;text-align:right"></span>
+        </div>
+        <input class="form-control" type="text"
+          placeholder="Motivo (opcional: derramamento, sobra...)"
+          id="bal-motivo-${ingId}" style="font-size:14px;padding:10px 14px">
+      </div>`;
+  });
+
+  if (!temItens) {
+    html = '<p style="text-align:center;color:var(--muted);padding:32px">Nenhum item esperado na cozinha para esta data</p>';
+  } else {
+    document.getElementById('btn-confirmar-balanco').classList.remove('hidden');
+  }
+  document.getElementById('lista-balanco').innerHTML = html;
+}
+
+function atualizarDifBalanco(ingId, esperado, unidade) {
+  const val = parseFloat(document.getElementById('bal-' + ingId).value);
+  const el  = document.getElementById('bal-dif-' + ingId);
+  if (isNaN(val)) { el.textContent = ''; return; }
+  const dif = val - esperado;
+  el.textContent = (dif >= 0 ? '+' : '') + dif.toFixed(1) + ' ' + unidade;
+  el.style.color = dif === 0 ? 'var(--green)' : dif > 0 ? 'var(--orange)' : 'var(--red)';
+}
+
+async function confirmarBalanco() {
+  const data      = document.getElementById('balanco-data').value;
+  const saldosRes = await api('saldos', 'GET', { data });
+  if (!saldosRes.ok) return;
+
+  const itens = [];
+  Object.entries(saldosRes.dados).forEach(([ingId, saldo]) => {
+    const input = document.getElementById('bal-' + ingId);
+    if (!input || input.value === '') return;
+    const val    = parseFloat(input.value);
+    const motivo = document.getElementById('bal-motivo-' + ingId)?.value || '';
+    if (isNaN(val)) return;
+    itens.push({ ingredient_id: ingId, qtd: val, motivo });
+  });
+
+  if (itens.length === 0) { toast('⚠️ Preencha ao menos um item'); return; }
+  loading(true, 'Salvando balanço...');
+  for (const item of itens) {
+    await api('balancos', 'POST', {
+      data, ingredient_id: item.ingredient_id,
+      qtd_contada_base: item.qtd, motivo: item.motivo, usuario: 'app',
+    });
+  }
+  loading(false);
+  toast('✅ Balanço salvo com sucesso!');
+  document.getElementById('lista-balanco').innerHTML = '';
+  document.getElementById('btn-confirmar-balanco').classList.add('hidden');
+}
+
+async function carregarHistoricoBalanco() {
+  loading(true, 'Carregando histórico...');
+  const res = await api('balancos');
+  loading(false);
+  if (!res.ok) { toast('❌ Erro ao carregar histórico'); return; }
+
+  const balancos = res.dados;
+  if (!balancos || balancos.length === 0) {
+    document.getElementById('lista-historico-balanco').innerHTML =
+      '<p style="text-align:center;color:var(--muted);padding:32px">Nenhum balanço registrado ainda</p>';
+    return;
+  }
+
+  const porData = {};
+  balancos.forEach(b => {
+    if (!porData[b.data]) porData[b.data] = [];
+    porData[b.data].push(b);
+  });
+
+  let html = '';
+  Object.entries(porData).forEach(([data, itens]) => {
+    const dt      = new Date(data + 'T12:00:00');
+    const dataFmt = `${String(dt.getDate()).padStart(2,'0')}/${String(dt.getMonth()+1).padStart(2,'0')}/${dt.getFullYear()}`;
+    html += `<div class="section-title">📅 ${dataFmt}</div><div class="card" style="margin-bottom:4px">`;
+    itens.forEach(b => {
+      const dif    = parseFloat(b.diferenca) || 0;
+      const cor    = dif === 0 ? 'var(--green)' : dif > 0 ? 'var(--orange)' : 'var(--red)';
+      const icone  = dif === 0 ? '✅' : dif > 0 ? '📈' : '📉';
+      const difAbs = Math.abs(dif);
+      const difFmt = dif === 0 ? 'Ok'
+        : (dif > 0 ? '+' : '') + (difAbs >= 1000
+          ? (dif / 1000).toFixed(2) + (b.unidade_base === 'mL' ? ' L' : ' kg')
+          : dif.toFixed(1) + ' ' + (b.unidade_base || 'g'));
+      html += `
+        <div style="padding:10px 0;border-bottom:1px solid var(--border)">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="font-weight:600;font-size:14px">${b.ingrediente || b.ingredient_id}</div>
+            <div style="font-weight:700;color:${cor}">${icone} ${difFmt}</div>
+          </div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">
+            Esperado: ${parseFloat(b.qtd_esperada_base).toFixed(1)} · Contado: ${parseFloat(b.qtd_contada_base).toFixed(1)}
+            ${b.motivo ? `· <em>${b.motivo}</em>` : ''}
+          </div>
+        </div>`;
+    });
+    html += '</div>';
+  });
+  document.getElementById('lista-historico-balanco').innerHTML = html;
+}
+
+// ── LISTA DE COMPRAS
+function iniciarListaCompras() {
+  const hoje = new Date();
+  const fim  = new Date();
+  fim.setDate(fim.getDate() + 7);
+  document.getElementById('lc-inicio').value = hoje.toISOString().split('T')[0];
+  document.getElementById('lc-fim').value    = fim.toISOString().split('T')[0];
+}
+
+async function gerarListaCompras() {
+  const inicio = document.getElementById('lc-inicio').value;
+  const fim    = document.getElementById('lc-fim').value;
+  if (!inicio || !fim) { toast('⚠️ Selecione o período'); return; }
+  loading(true, 'Gerando lista de compras...');
+  const res = await api('lista-compras', 'GET', { inicio, fim });
+  loading(false);
+  if (!res.ok) { toast('❌ Erro: ' + res.erro); return; }
+
+  const por_fornecedor = res.dados.por_fornecedor || [];
+  const sem_cadastro   = res.dados.sem_cadastro   || [];
+  const total_geral    = res.dados.total_geral     || 0;
+
+  if (por_fornecedor.length === 0 && sem_cadastro.length === 0) {
+    document.getElementById('lista-compras-resultado').innerHTML =
+      '<div class="card" style="text-align:center;color:var(--muted)">✅ Estoque suficiente para o período</div>';
+    return;
+  }
+
+  let html = '';
+  if (por_fornecedor.length > 0) {
+    por_fornecedor.forEach(forn => {
+      html += `<div class="section-title">🏪 ${forn.fornecedor}</div><div class="card" style="margin-bottom:4px">`;
+      forn.itens.forEach(item => {
+        html += `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">
+            <div>
+              <div style="font-weight:600;font-size:15px">${item.ingrediente}</div>
+              <div style="font-size:12px;color:var(--muted)">${item.marca} · ${item.embalagem} · ${item.qtd_embalagens} emb.</div>
+            </div>
+            <div style="text-align:right;font-weight:700">${formatarMoeda(item.valor_estimado)}</div>
+          </div>`;
+      });
+      html += `<div style="display:flex;justify-content:space-between;padding:10px 0 2px;font-weight:700">
+        <span>Subtotal</span><span>${formatarMoeda(forn.subtotal)}</span></div></div>`;
+    });
+    html += `<div class="card" style="background:var(--dark);color:#fff;margin-top:8px;margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;font-size:18px;font-weight:800">
+        <span>TOTAL GERAL</span><span>${formatarMoeda(total_geral)}</span>
+      </div></div>`;
+  }
+
+  if (sem_cadastro.length > 0) {
+    html += `<div class="section-title" style="color:var(--orange)">⚠️ Sem SKU cadastrado (${sem_cadastro.length})</div>
+      <div class="card" style="border-left:4px solid var(--orange);margin-bottom:4px">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Estes ingredientes precisam ser comprados mas ainda não têm fornecedor ou embalagem cadastrada.</p>`;
+    sem_cadastro.forEach(item => {
+      html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">
+        <div style="font-weight:600;font-size:15px">${item.ingrediente}</div>
+        <div style="font-weight:700;color:var(--orange)">${item.falta_fmt}</div>
+      </div>`;
+    });
+    html += '</div>';
+  }
+  document.getElementById('lista-compras-resultado').innerHTML = html;
+}
+
+// ── SCANNER
+let scannerStream = null;
+
+function abrirScanner(campoDestino, callback) {
+  let lido = false;
+  const modalAnterior   = document.getElementById('modal-content').innerHTML;
+  const modalEstaAberto = !document.getElementById('modal-overlay').classList.contains('hidden');
+
+  document.getElementById('modal-content').innerHTML = `
+    <button class="modal-close" onclick="fecharScanner(${modalEstaAberto})">×</button>
+    <div class="modal-title">📷 Escanear código</div>
+    <div id="scanner-container" style="width:100%;border-radius:14px;overflow:hidden;background:#000;min-height:250px"></div>
+    <p style="text-align:center;color:var(--muted);font-size:16px;margin-top:16px">Aponte para o código de barras</p>
+    <button class="btn btn-outline" style="margin-top:12px" onclick="fecharScanner(${modalEstaAberto})">Cancelar</button>
+  `;
+  document.getElementById('modal-overlay').classList.remove('hidden');
+
+  Quagga.init({
+    inputStream: { name: 'Live', type: 'LiveStream', target: document.getElementById('scanner-container'),
+      constraints: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } } },
+    decoder: { readers: ['ean_reader','ean_8_reader','code_128_reader','upc_reader','upc_e_reader'] },
+    locate: true,
+  }, err => {
+    if (err) {
+      _fecharScannerStream();
+      if (modalEstaAberto) document.getElementById('modal-content').innerHTML = modalAnterior;
+      else fecharModal();
+      toast('❌ Erro ao acessar câmera');
+      return;
+    }
+    Quagga.start();
+  });
+
+  Quagga.onDetected(result => {
+    if (lido) return;
+    const codigo = result.codeResult.code;
+    if (!codigo) return;
+    lido = true;
+    _fecharScannerStream();
+    if (modalEstaAberto) document.getElementById('modal-content').innerHTML = modalAnterior;
+    else document.getElementById('modal-overlay').classList.add('hidden');
+    setTimeout(() => {
+      const campo = document.getElementById(campoDestino);
+      if (campo) { campo.value = codigo; toast('✅ Código lido: ' + codigo); }
+      if (typeof callback === 'function') callback();
+    }, 100);
+  });
+}
+
+function _fecharScannerStream() {
+  try { Quagga.stop(); } catch(_) {}
+  if (scannerStream) { scannerStream.getTracks().forEach(t => t.stop()); scannerStream = null; }
+}
+
+function fecharScanner(restaurarModal = false) {
+  _fecharScannerStream();
+  if (!restaurarModal) fecharModal();
+}
+
+// ── INICIALIZAÇÃO
 async function init() {
   loading(true, 'Iniciando...');
   const [resIng, resForn, resSkus] = await Promise.all([
