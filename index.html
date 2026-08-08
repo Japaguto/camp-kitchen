@@ -1004,9 +1004,11 @@ async function gerarListaCompras() {
 
   if (!res.ok) { toast('❌ Erro: ' + res.erro); return; }
 
-  const { por_fornecedor, sem_cadastro, total_geral } = res.dados;
+  const por_fornecedor = res.dados.por_fornecedor || [];
+  const sem_cadastro   = res.dados.sem_cadastro   || [];
+  const total_geral    = res.dados.total_geral     || 0;
 
-  if ((!por_fornecedor || por_fornecedor.length === 0) && (!sem_cadastro || sem_cadastro.length === 0)) {
+  if (por_fornecedor.length === 0 && sem_cadastro.length === 0) {
     document.getElementById('lista-compras-resultado').innerHTML =
       '<div class="card" style="text-align:center;color:var(--muted)">✅ Estoque suficiente para o período</div>';
     return;
@@ -1015,7 +1017,7 @@ async function gerarListaCompras() {
   let html = '';
 
   // Itens com SKU agrupados por fornecedor
-  if (por_fornecedor && por_fornecedor.length > 0) {
+  if (por_fornecedor.length > 0) {
     por_fornecedor.forEach(forn => {
       html += `<div class="section-title">🏪 ${forn.fornecedor}</div>
                <div class="card" style="margin-bottom:4px">`;
@@ -1030,10 +1032,10 @@ async function gerarListaCompras() {
           </div>`;
       });
       html += `
-          <div style="display:flex;justify-content:space-between;padding:10px 0 2px;font-weight:700">
-            <span>Subtotal</span><span>${formatarMoeda(forn.subtotal)}</span>
-          </div>
-        </div>`;
+        <div style="display:flex;justify-content:space-between;padding:10px 0 2px;font-weight:700">
+          <span>Subtotal</span><span>${formatarMoeda(forn.subtotal)}</span>
+        </div>
+      </div>`;
     });
 
     html += `
@@ -1045,9 +1047,9 @@ async function gerarListaCompras() {
   }
 
   // Itens sem SKU cadastrado
-  if (sem_cadastro && sem_cadastro.length > 0) {
+  if (sem_cadastro.length > 0) {
     html += `
-      <div class="section-title" style="color:var(--red)">⚠️ Sem SKU cadastrado (${sem_cadastro.length})</div>
+      <div class="section-title" style="color:var(--orange)">⚠️ Sem SKU cadastrado (${sem_cadastro.length})</div>
       <div class="card" style="border-left:4px solid var(--orange);margin-bottom:4px">
         <p style="font-size:13px;color:var(--muted);margin-bottom:12px">
           Estes ingredientes precisam ser comprados mas ainda não têm fornecedor ou embalagem cadastrada.
@@ -1064,7 +1066,6 @@ async function gerarListaCompras() {
 
   document.getElementById('lista-compras-resultado').innerHTML = html;
 }
-
 // ══════════════════════════════════════════
 // LEITOR DE CÓDIGO DE BARRAS
 // ══════════════════════════════════════════
