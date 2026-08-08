@@ -438,7 +438,7 @@ function irTela(id) {
   };
   document.getElementById('header-title').textContent = titulos[id] || 'Camp Kitchen';
 
-  if (id === 'tela-painel' && state.telaAtual !== 'tela-painel') carregarPainel();
+  if (id === 'tela-painel')        carregarPainel();
   if (id === 'tela-produtos')      carregarIngredientes();
   if (id === 'tela-balanco')       carregarBalanco();
   if (id === 'tela-lista-compras') iniciarListaCompras();
@@ -487,11 +487,6 @@ async function carregarPainel() {
 // ══════════════════════════════════════════
 
 async function carregarIngredientes() {
-  // Se já tem dados carregados, só renderiza
-  if (state.ingredientes.length > 0 && state.skus.length > 0) {
-    renderIngredientes();
-    return;
-  }
   loading(true, 'Carregando ingredientes...');
   const res = await api('dados-iniciais');
   loading(false);
@@ -502,7 +497,7 @@ async function carregarIngredientes() {
   }
   renderIngredientes();
 }
-
+  
 function filtrarIngredientes() { renderIngredientes(); }
 
 function setFiltroStatus(status, btn) {
