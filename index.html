@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+</head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta name="theme-color" content="#1a1a2e">
@@ -1046,84 +1048,59 @@ async function gerarListaCompras() {
 
 let scannerStream = null;
 
-async function abrirScanner(campoDestino, callback) {
+function abrirScanner(campoDestino, callback) {
   abrirModal(`
     <button class="modal-close" onclick="fecharScanner()">×</button>
     <div class="modal-title">📷 Escanear código</div>
-    <div class="barcode-box">
-      <video id="barcode-video" autoplay playsinline muted></video>
-      <div class="barcode-line"></div>
-    </div>
+    <div id="scanner-container" style="width:100%;border-radius:14px;overflow:hidden;background:#000;min-height:250px"></div>
     <p style="text-align:center;color:var(--muted);font-size:16px;margin-top:16px">Aponte para o código de barras</p>
     <button class="btn btn-outline" style="margin-top:12px" onclick="fecharScanner()">Cancelar</button>
   `);
 
-  try {
-    scannerStream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
-    });
-
-    const video = document.getElementById('barcode-video');
-    video.srcObject = scannerStream;
-    await video.play();
-
-    // Tenta BarcodeDetector primeiro (Android/Chrome)
-    if ('BarcodeDetector' in window) {
-      const detector  = new BarcodeDetector({ formats: ['ean_13','ean_8','code_128','upc_a','upc_e'] });
-      const intervalo = setInterval(async () => {
-        try {
-          const barcodes = await detector.detect(video);
-          if (barcodes.length > 0) {
-            clearInterval(intervalo);
-            const codigo = barcodes[0].rawValue;
-            fecharScanner();
-            document.getElementById(campoDestino).value = codigo;
-            toast('✅ Código lido: ' + codigo);
-            if (callback) callback();
-          }
-        } catch(_) {}
-      }, 300);
-
-    } else {
-      // iPhone/Safari — usa ZXing
-      const script    = document.createElement('script');
-      script.src      = 'https://unpkg.com/@zxing/library@0.19.1/umd/index.min.js';
-      script.onload   = () => {
-        const codeReader = new ZXing.BrowserMultiFormatReader();
-        codeReader.decodeFromVideoElement(video, (result, err) => {
-          if (result) {
-            codeReader.reset();
-            fecharScanner();
-            document.getElementById(campoDestino).value = result.getText();
-            toast('✅ Código lido: ' + result.getText());
-            if (callback) callback();
-          }
-        });
-
-        // Guarda referência para parar depois
-        window._zxingReader = codeReader;
-      };
-      document.head.appendChild(script);
+  Quagga.init({
+    inputStream: {
+      name: 'Live',
+      type: 'LiveStream',
+      target: document.getElementById('scanner-container'),
+      constraints: {
+        facingMode: 'environment',
+        width:  { ideal: 1280 },
+        height: { ideal: 720 },
+      },
+    },
+    decoder: {
+      readers: [
+        'ean_reader',
+        'ean_8_reader',
+        'code_128_reader',
+        'upc_reader',
+        'upc_e_reader',
+      ],
+    },
+    locate: true,
+  }, err => {
+    if (err) {
+      fecharScanner();
+      toast('❌ Erro ao acessar câmera: ' + err);
+      return;
     }
+    Quagga.start();
+  });
 
-  } catch(e) {
+  Quagga.onDetected(result => {
+    const codigo = result.codeResult.code;
+    if (!codigo) return;
     fecharScanner();
-    toast('❌ Sem permissão para câmera. Digite o código manualmente.');
-  }
+    document.getElementById(campoDestino).value = codigo;
+    toast('✅ Código lido: ' + codigo);
+    if (callback) callback();
+  });
 }
 
 function fecharScanner() {
-  if (window._zxingReader) {
-    window._zxingReader.reset();
-    window._zxingReader = null;
-  }
-  if (scannerStream) {
-    scannerStream.getTracks().forEach(t => t.stop());
-    scannerStream = null;
-  }
+  try { Quagga.stop(); } catch(_) {}
   fecharModal();
 }
-
 // ══════════════════════════════════════════
 // FORMATADORES
 // ══════════════════════════════════════════
