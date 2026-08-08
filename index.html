@@ -260,8 +260,9 @@
       <input class="form-control" type="number" id="compra-qtd" min="1" value="1" oninput="calcularTotalCompra()">
     </div>
     <div class="form-group">
-      <label class="form-label">Preço por embalagem</label>
-      <input class="form-control" type="number" id="compra-preco" step="0.01" placeholder="0.00" oninput="calcularTotalCompra()">
+      <label class="form-label">Total pago</label>
+      <input class="form-control" type="number" id="compra-preco-total" step="0.01" placeholder="0.00" oninput="calcularTotalCompra()">
+      <div style="font-size:13px;color:var(--muted);margin-top:6px" id="compra-preco-unit-info"></div>
     </div>
     <div class="form-group">
       <label class="form-label">Destino</label>
@@ -732,32 +733,50 @@ function setDestino(dest) {
 }
 
 function calcularTotalCompra() {
-  const qtd   = parseFloat(document.getElementById('compra-qtd').value)   || 0;
-  const preco = parseFloat(document.getElementById('compra-preco').value) || 0;
-  document.getElementById('compra-total').textContent = formatarMoeda(qtd * preco);
+  const qtd        = parseFloat(document.getElementById('compra-qtd').value) || 0;
+  const totalPago  = parseFloat(document.getElementById('compra-preco-total').value) || 0;
+  const precoUnit  = qtd > 0 ? totalPago / qtd : 0;
+
+  document.getElementById('compra-total').textContent = formatarMoeda(totalPago);
+
+  const infoEl = document.getElementById('compra-preco-unit-info');
+  if (qtd > 0 && totalPago > 0) {
+    infoEl.textContent = `${formatarMoeda(precoUnit)} por embalagem`;
+  } else {
+    infoEl.textContent = '';
+  }
 }
 
 async function confirmarCompra() {
   if (!state.compraSkuSelecionado) { toast('⚠️ Selecione um produto'); return; }
-  const qtd   = parseFloat(document.getElementById('compra-qtd').value);
-  const preco = parseFloat(document.getElementById('compra-preco').value);
+  const qtd        = parseFloat(document.getElementById('compra-qtd').value);
+  const totalPago  = parseFloat(document.getElementById('compra-preco-total').value) || 0;
+  const precoUnit  = qtd > 0 ? totalPago / qtd : 0;
+
   if (!qtd || qtd <= 0) { toast('⚠️ Informe a quantidade'); return; }
+
   loading(true, 'Registrando compra...');
   const res = await api('compras', 'POST', {
-    sku_id: state.compraSkuSelecionado.sku_id,
-    qtd_embalagens: qtd, preco_pago_unit: preco || 0,
-    destino: state.compraDestino,
-    nota_fiscal: document.getElementById('compra-nf').value,
-    usuario: 'app',
+    sku_id:          state.compraSkuSelecionado.sku_id,
+    qtd_embalagens:  qtd,
+    preco_pago_unit: precoUnit,
+    destino:         state.compraDestino,
+    nota_fiscal:     document.getElementById('compra-nf').value,
+    usuario:         state.usuario ? state.usuario.nome : 'app',
   });
   loading(false);
+
   if (res.ok) {
     toast('✅ Compra registrada! ' + (res.dados.qtd_total || ''));
     limparSkuCompra();
-    document.getElementById('compra-qtd').value   = 1;
-    document.getElementById('compra-preco').value = '';
-    document.getElementById('compra-nf').value    = '';
-  } else toast('❌ Erro: ' + res.erro);
+    document.getElementById('compra-qtd').value         = 1;
+    document.getElementById('compra-preco-total').value = '';
+    document.getElementById('compra-preco-unit-info').textContent = '';
+    document.getElementById('compra-nf').value          = '';
+    document.getElementById('compra-total').textContent = '--';
+  } else {
+    toast('❌ Erro: ' + res.erro);
+  }
 }
 
 // ── REQUISIÇÃO
