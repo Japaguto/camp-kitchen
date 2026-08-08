@@ -507,12 +507,15 @@ function abrirIngrediente(ingId) {
   const ing   = state.ingredientes.find(i => i.ingredient_id === ingId);
   const skus  = state.skus.filter(s => s.ingredient_id === ingId);
   const forns = state.fornecedores;
+
   let skusHtml = skus.map(s => {
     const forn = forns.find(f => f.fornecedor_id === s.fornecedor_id);
-    return `<div class="card" style="margin-bottom:8px">
+    return `<div class="card" style="margin-bottom:8px;position:relative">
       <div style="font-weight:700">${s.marca}</div>
       <div style="font-size:13px;color:var(--muted)">${s.qtd_embalagem} ${s.unidade_embalagem} · ${forn ? forn.nome : '—'}</div>
       ${s.codigo_barras ? `<div style="font-size:12px;color:var(--muted)">🔍 ${s.codigo_barras}</div>` : ''}
+      <button class="btn btn-outline btn-sm" style="margin-top:8px;width:auto"
+        onclick="fecharModal();abrirModalEditarSku(${JSON.stringify(s).replace(/"/g,'&quot;')})">✏️ Editar</button>
     </div>`;
   }).join('') || '<p style="color:var(--muted);font-size:13px">Nenhum SKU cadastrado ainda.</p>';
 
@@ -1125,6 +1128,83 @@ function fecharScanner(restaurarModal = false) {
   if (!restaurarModal) fecharModal();
 }
 
+function abrirModalEditarSku(sku) {
+  const optsForns = state.fornecedores.map(f =>
+    `<option value="${f.fornecedor_id}" ${f.fornecedor_id === sku.fornecedor_id ? 'selected' : ''}>${f.nome}</option>`
+  ).join('');
+
+  const unidades = ['g','kg','mL','L','unidade'];
+  const optsUnid = unidades.map(u =>
+    `<option value="${u}" ${u === sku.unidade_embalagem ? 'selected' : ''}>${u}</option>`
+  ).join('');
+
+  abrirModal(`
+    <button class="modal-close" onclick="fecharModal()">×</button>
+    <div class="modal-title">Editar SKU</div>
+    <input type="hidden" id="edit-sku-id" value="${sku.sku_id}">
+    <input type="hidden" id="edit-ing-id" value="${sku.ingredient_id}">
+    <div class="form-group">
+      <label class="form-label">Marca</label>
+      <input class="form-control" id="edit-sku-marca" value="${sku.marca || ''}">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Fornecedor</label>
+      <select class="form-control" id="edit-sku-forn">
+        <option value="">Selecione...</option>${optsForns}
+      </select>
+    </div>
+    <div style="display:flex;gap:10px">
+      <div class="form-group" style="flex:1">
+        <label class="form-label">Qtd embalagem</label>
+        <input class="form-control" type="number" id="edit-sku-qtd" value="${sku.qtd_embalagem || ''}">
+      </div>
+      <div class="form-group" style="flex:1">
+        <label class="form-label">Unidade</label>
+        <select class="form-control" id="edit-sku-unidade">${optsUnid}</select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Novo preço por embalagem (opcional)</label>
+      <input class="form-control" type="number" id="edit-sku-preco" step="0.01" placeholder="Deixe vazio para não alterar">
+    </div>
+    <div class="form-group">
+      <label class="form-label">📷 Código de barras</label>
+      <div style="display:flex;gap:8px">
+        <input class="form-control" id="edit-sku-barcode" value="${sku.codigo_barras || ''}" style="flex:1">
+        <button class="btn btn-dark btn-sm" onclick="abrirScanner('edit-sku-barcode', null)">📷</button>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="salvarEdicaoSku()">💾 Salvar alterações</button>
+  `);
+}
+
+async function salvarEdicaoSku() {
+  const payload = {
+    sku_id:            document.getElementById('edit-sku-id').value,
+    ingredient_id:     document.getElementById('edit-ing-id').value,
+    marca:             document.getElementById('edit-sku-marca').value.trim(),
+    fornecedor_id:     document.getElementById('edit-sku-forn').value,
+    qtd_embalagem:     document.getElementById('edit-sku-qtd').value,
+    unidade_embalagem: document.getElementById('edit-sku-unidade').value,
+    preco_unitario:    document.getElementById('edit-sku-preco').value,
+    codigo_barras:     document.getElementById('edit-sku-barcode').value.trim(),
+  };
+
+  if (!payload.marca || !payload.qtd_embalagem) { toast('⚠️ Preencha marca e quantidade'); return; }
+
+  loading(true, 'Salvando...');
+  const res = await api('skus/editar', 'POST', payload);
+  loading(false);
+
+  if (res.ok) {
+    toast('✅ SKU atualizado!');
+    fecharModal();
+    carregarIngredientes();
+  } else {
+    toast('❌ Erro: ' + res.erro);
+  }
+}
+  
 // ── INICIALIZAÇÃO
 async function init() {
   loading(true, 'Iniciando...');
