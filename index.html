@@ -438,7 +438,7 @@ function irTela(id) {
   };
   document.getElementById('header-title').textContent = titulos[id] || 'Camp Kitchen';
 
-  if (id === 'tela-painel')        carregarPainel();
+  if (id === 'tela-painel' && state.telaAtual !== 'tela-painel') carregarPainel();
   if (id === 'tela-produtos')      carregarIngredientes();
   if (id === 'tela-balanco')       carregarBalanco();
   if (id === 'tela-lista-compras') iniciarListaCompras();
@@ -453,12 +453,11 @@ function voltarTela() {
 // ══════════════════════════════════════════
 
 async function carregarPainel() {
-  loading(true, 'Carregando painel...');
+  // Mostra dados em cache imediatamente se existirem
   const [painel, alertas] = await Promise.all([
     api('painel'),
     api('alertas'),
   ]);
-  loading(false);
 
   if (painel.ok) {
     const d = painel.dados;
@@ -469,8 +468,8 @@ async function carregarPainel() {
   }
 
   if (alertas.ok) {
-    const a   = alertas.dados;
-    let html  = '';
+    const a  = alertas.dados;
+    let html = '';
     if (a.sem_sku.length > 0)
       html += `<div class="alerta warn"><span>🟡</span><p>${a.sem_sku.length} ingredientes sem SKU cadastrado</p></div>`;
     if (a.sem_compra.length > 0)
@@ -488,18 +487,19 @@ async function carregarPainel() {
 // ══════════════════════════════════════════
 
 async function carregarIngredientes() {
+  // Se já tem dados carregados, só renderiza
+  if (state.ingredientes.length > 0 && state.skus.length > 0) {
+    renderIngredientes();
+    return;
+  }
   loading(true, 'Carregando ingredientes...');
-  const [resIng, resForn, resSkus] = await Promise.all([
-    api('ingredientes', 'GET', { status: 'completo' }),
-    api('fornecedores'),
-    api('skus'),
-  ]);
+  const res = await api('dados-iniciais');
   loading(false);
-
-  if (resIng.ok)  state.ingredientes  = resIng.dados;
-  if (resForn.ok) state.fornecedores  = resForn.dados;
-  if (resSkus.ok) state.skus          = resSkus.dados;
-
+  if (res.ok) {
+    state.ingredientes = res.dados.ingredientes || [];
+    state.fornecedores = res.dados.fornecedores || [];
+    state.skus         = res.dados.skus         || [];
+  }
   renderIngredientes();
 }
 
@@ -1161,15 +1161,14 @@ function formatarBase(qtd) {
 
 async function init() {
   loading(true, 'Iniciando...');
-  const [resIng, resForn, resSkus] = await Promise.all([
-    api('ingredientes', 'GET', { status: 'completo' }),
-    api('fornecedores'),
-    api('skus'),
-  ]);
-  if (resIng.ok)  state.ingredientes = resIng.dados;
-  if (resForn.ok) state.fornecedores = resForn.dados;
-  if (resSkus.ok) state.skus         = resSkus.dados;
+  const res = await api('dados-iniciais');
   loading(false);
+
+  if (res.ok) {
+    state.ingredientes = res.dados.ingredientes || [];
+    state.fornecedores = res.dados.fornecedores || [];
+    state.skus         = res.dados.skus         || [];
+  }
   carregarPainel();
 }
 
