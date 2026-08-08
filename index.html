@@ -478,7 +478,7 @@ function renderIngredientes() {
     if (status === 'sem_sku'    && temSku)    return false;
     if (status === 'sem_compra' && temCompra) return false;
     return true;
-  });
+  }).sort((a, b) => a.nome.toString().localeCompare(b.nome.toString()));
 
   let html = '';
   lista.forEach(ing => {
