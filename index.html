@@ -209,6 +209,11 @@
     <div class="item-body"><div class="item-title">Balanço</div><div class="item-sub">Contagem física da cozinha</div></div>
     <div class="item-arrow">›</div>
   </div>
+  <div class="item" onclick="irTela('tela-transferencia')">
+    <div class="item-icon" style="background:#e8eaf6">🚚</div>
+    <div class="item-body"><div class="item-title">Transferência</div><div class="item-sub">Mover do estoque para a cozinha</div></div>
+    <div class="item-arrow">›</div>
+  </div>
 </div>
 
 <!-- ══════════════════════════════════════════ -->
@@ -327,7 +332,20 @@
   </div>
   <div id="lista-compras-resultado"></div>
 </div>
-
+  
+<!-- ══════════════════════════════════════════ -->
+<!-- TELA: TRANSFERÊNCIA -->
+<!-- ══════════════════════════════════════════ -->
+<div class="tela" id="tela-transferencia">
+  <div class="card" style="margin-bottom:16px">
+    <p style="font-size:14px;color:var(--muted)">Selecione os ingredientes para transferir do estoque para a cozinha.</p>
+  </div>
+  <div id="lista-transferencia"></div>
+  <div id="btn-confirmar-transferencia" class="hidden">
+    <button class="btn btn-primary" onclick="confirmarTransferencia()">🚚 Confirmar Transferência</button>
+  </div>
+</div>
+  
 <!-- ══════════════════════════════════════════ -->
 <!-- NAV -->
 <!-- ══════════════════════════════════════════ -->
@@ -441,6 +459,7 @@ function irTela(id) {
   if (id === 'tela-painel')        carregarPainel();
   if (id === 'tela-produtos')      carregarIngredientes();
   if (id === 'tela-balanco')       carregarBalanco();
+  if (id === 'tela-transferencia') carregarTransferencia();
   if (id === 'tela-lista-compras') iniciarListaCompras();
 }
 
@@ -1180,6 +1199,107 @@ function formatarBase(qtd) {
   return qtd.toFixed(0) + ' g/mL';
 }
 
+// ══════════════════════════════════════════
+// TRANSFERÊNCIA
+// ══════════════════════════════════════════
+
+async function carregarTransferencia() {
+  loading(true, 'Carregando saldos...');
+  const res = await api('saldos');
+  loading(false);
+
+  if (!res.ok) { toast('❌ Erro ao carregar saldos'); return; }
+
+  const saldos = res.dados;
+  let html     = '';
+  let temItens = false;
+
+  Object.entries(saldos).forEach(([ingId, saldo]) => {
+    const estoque = parseFloat(saldo.estoque) || 0;
+    if (estoque <= 0) return;
+
+    const ing = state.ingredientes.find(i => i.ingredient_id === ingId);
+    if (!ing) return;
+
+    temItens = true;
+    const estoqueFmt = estoque >= 1000
+      ? (estoque / 1000).toFixed(2) + (ing.unidade_base === 'mL' ? ' L' : ' kg')
+      : estoque.toFixed(0) + ' ' + ing.unidade_base;
+
+    html += `
+      <div class="card" style="margin-bottom:10px">
+        <div style="font-weight:700;margin-bottom:4px">${ing.nome}</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Em estoque: ${estoqueFmt}</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <input class="form-control" type="number" step="0.1" min="0"
+            placeholder="Qtd a transferir (${ing.unidade_base})"
+            id="trf-${ingId}" style="flex:1"
+            oninput="validarTransferencia('${ingId}', ${estoque})">
+          <span id="trf-err-${ingId}" style="font-size:12px;color:var(--red);min-width:60px"></span>
+        </div>
+      </div>`;
+  });
+
+  if (!html) {
+    html = '<p style="text-align:center;color:var(--muted);padding:32px">Nenhum item em estoque no momento</p>';
+  } else {
+    document.getElementById('btn-confirmar-transferencia').classList.remove('hidden');
+  }
+
+  document.getElementById('lista-transferencia').innerHTML = html;
+}
+
+function validarTransferencia(ingId, estoqueMax) {
+  const val = parseFloat(document.getElementById('trf-' + ingId).value) || 0;
+  const el  = document.getElementById('trf-err-' + ingId);
+  if (val > estoqueMax) {
+    el.textContent = '⚠️ Excede estoque';
+    document.getElementById('trf-' + ingId).value = estoqueMax;
+  } else {
+    el.textContent = '';
+  }
+}
+
+async function confirmarTransferencia() {
+  const saldosRes = await api('saldos');
+  if (!saldosRes.ok) return;
+
+  const saldos = saldosRes.dados;
+  const itens  = [];
+
+  Object.entries(saldos).forEach(([ingId, saldo]) => {
+    const input = document.getElementById('trf-' + ingId);
+    if (!input || !input.value) return;
+    const val = parseFloat(input.value) || 0;
+    if (val <= 0) return;
+    itens.push({ ingredient_id: ingId, qtd: val });
+  });
+
+  if (itens.length === 0) { toast('⚠️ Informe pelo menos uma quantidade'); return; }
+
+  loading(true, 'Registrando transferências...');
+  for (const item of itens) {
+    await api('transferencias/envio', 'POST', {
+      ingredient_id:    item.ingredient_id,
+      qtd_enviada_base: item.qtd,
+      usuario:          'app',
+    });
+    // Confirma recebimento automaticamente
+    const resEnvio = await api('transferencias', 'GET');
+    if (resEnvio.ok && resEnvio.dados.length > 0) {
+      const ultima = resEnvio.dados[resEnvio.dados.length - 1];
+      await api('transferencias/recebimento', 'POST', {
+        transf_id:         ultima.transf_id,
+        qtd_recebida_base: item.qtd,
+        usuario:           'app',
+      });
+    }
+  }
+  loading(false);
+  toast('✅ Transferência realizada!');
+  carregarTransferencia();
+}
+  
 // ══════════════════════════════════════════
 // INICIALIZAÇÃO
 // ══════════════════════════════════════════
