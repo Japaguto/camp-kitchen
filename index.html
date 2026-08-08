@@ -131,6 +131,36 @@
   <h1 id="header-title">Camp Kitchen</h1>
 </div>
 
+<!-- LOGIN -->
+<div class="tela ativa" id="tela-login">
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;gap:24px">
+    <div style="font-size:48px">👨‍🍳</div>
+    <div style="font-size:28px;font-weight:800;color:var(--dark)">Camp Kitchen</div>
+    <div style="font-size:16px;color:var(--muted)">Digite seu PIN para entrar</div>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:8px 0">
+      <div id="pin-dot-0" style="width:20px;height:20px;border-radius:50%;background:var(--border);margin:auto"></div>
+      <div id="pin-dot-1" style="width:20px;height:20px;border-radius:50%;background:var(--border);margin:auto"></div>
+      <div id="pin-dot-2" style="width:20px;height:20px;border-radius:50%;background:var(--border);margin:auto"></div>
+      <div id="pin-dot-3" style="width:20px;height:20px;border-radius:50%;background:var(--border);margin:auto"></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:280px">
+      ${[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(n => `
+        <button onclick="pinPress('${n}')" style="
+          height:72px;border-radius:16px;border:none;
+          background:${n==='' ? 'transparent' : 'var(--card)'};
+          font-size:24px;font-weight:700;color:var(--dark);
+          box-shadow:${n==='' ? 'none' : 'var(--shadow)'};
+          cursor:pointer">
+          ${n}
+        </button>`).join('')}
+    </div>
+
+    <div id="login-erro" style="color:var(--red);font-size:14px;font-weight:600;min-height:20px"></div>
+  </div>
+</div>
+  
 <!-- PAINEL -->
 <div class="tela ativa" id="tela-painel">
   <div class="cards-grid">
