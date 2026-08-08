@@ -109,6 +109,8 @@
   .alerta.warn   { background: #fff9c4; }
   .alerta p { font-size: 16px; font-weight: 600; }
   .alerta span { font-size: 28px; }
+  .pin-btn { height:72px; border-radius:16px; border:none; background:var(--card); font-size:24px; font-weight:700; color:var(--dark); box-shadow:var(--shadow); cursor:pointer; }
+  .pin-btn:active { opacity:.7; transform:scale(0.95); }
 
   .hidden { display: none !important; }
 </style>
@@ -134,7 +136,7 @@
 
 <!-- LOGIN -->
 <div class="tela ativa" id="tela-login">
-  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;gap:24px">
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;gap:24px;padding:20px">
     <div style="font-size:48px">👨‍🍳</div>
     <div style="font-size:28px;font-weight:800;color:var(--dark)">Camp Kitchen</div>
     <div style="font-size:16px;color:var(--muted)">Digite seu PIN para entrar</div>
@@ -147,15 +149,18 @@
     </div>
 
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:280px">
-      ${[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(n => `
-        <button onclick="pinPress('${n}')" style="
-          height:72px;border-radius:16px;border:none;
-          background:${n==='' ? 'transparent' : 'var(--card)'};
-          font-size:24px;font-weight:700;color:var(--dark);
-          box-shadow:${n==='' ? 'none' : 'var(--shadow)'};
-          cursor:pointer">
-          ${n}
-        </button>`).join('')}
+      <button onclick="pinPress('1')" class="pin-btn">1</button>
+      <button onclick="pinPress('2')" class="pin-btn">2</button>
+      <button onclick="pinPress('3')" class="pin-btn">3</button>
+      <button onclick="pinPress('4')" class="pin-btn">4</button>
+      <button onclick="pinPress('5')" class="pin-btn">5</button>
+      <button onclick="pinPress('6')" class="pin-btn">6</button>
+      <button onclick="pinPress('7')" class="pin-btn">7</button>
+      <button onclick="pinPress('8')" class="pin-btn">8</button>
+      <button onclick="pinPress('9')" class="pin-btn">9</button>
+      <button style="background:transparent;border:none;height:72px"></button>
+      <button onclick="pinPress('0')" class="pin-btn">0</button>
+      <button onclick="pinPress('⌫')" class="pin-btn" style="font-size:20px">⌫</button>
     </div>
 
     <div id="login-erro" style="color:var(--red);font-size:14px;font-weight:600;min-height:20px"></div>
