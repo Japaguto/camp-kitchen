@@ -518,10 +518,16 @@ function renderIngredientes() {
   const skus   = state.skus;
 
   let lista = state.ingredientes.filter(ing => {
+    // Corrige ativo que pode vir como string "TRUE" ou booleano true
+    const ativo = ing.ativo === true || ing.ativo === 'TRUE' || ing.ativo === 'true';
+    if (!ativo) return false;
+
     const nome = ing.nome.toString().toLowerCase();
     if (busca && !nome.includes(busca)) return false;
+
     const temSku    = skus.some(s => s.ingredient_id === ing.ingredient_id);
-    const temCompra = ing.tem_compra;
+    const temCompra = ing.tem_compra === true || ing.tem_compra === 'TRUE';
+
     if (status === 'sem_sku'    && temSku)    return false;
     if (status === 'sem_compra' && temCompra) return false;
     return true;
@@ -531,7 +537,7 @@ function renderIngredientes() {
   lista.forEach(ing => {
     const skusIng   = skus.filter(s => s.ingredient_id === ing.ingredient_id);
     const temSku    = skusIng.length > 0;
-    const temCompra = ing.tem_compra;
+    const temCompra = ing.tem_compra === true || ing.tem_compra === 'TRUE';
     const badge     = !temSku    ? '<span class="badge badge-warn">Sem SKU</span>'
                     : !temCompra ? '<span class="badge badge-danger">Sem compra</span>'
                     :              '<span class="badge badge-ok">✅ Ok</span>';
