@@ -1048,15 +1048,21 @@ async function gerarListaCompras() {
 let scannerStream = null;
 
 function abrirScanner(campoDestino, callback) {
-  let lido = false; // evita leitura dupla
+  let lido = false;
+  
+  // Guarda o conteúdo do modal atual antes de abrir o scanner
+  const modalAnterior = document.getElementById('modal-content').innerHTML;
+  const modalEstaAberto = !document.getElementById('modal-overlay').classList.contains('hidden');
 
-  abrirModal(`
-    <button class="modal-close" onclick="fecharScanner()">×</button>
+  // Substitui o conteúdo do modal pelo scanner (sem fechar o modal)
+  document.getElementById('modal-content').innerHTML = `
+    <button class="modal-close" onclick="fecharScanner(${modalEstaAberto})">×</button>
     <div class="modal-title">📷 Escanear código</div>
     <div id="scanner-container" style="width:100%;border-radius:14px;overflow:hidden;background:#000;min-height:250px"></div>
     <p style="text-align:center;color:var(--muted);font-size:16px;margin-top:16px">Aponte para o código de barras</p>
-    <button class="btn btn-outline" style="margin-top:12px" onclick="fecharScanner()">Cancelar</button>
-  `);
+    <button class="btn btn-outline" style="margin-top:12px" onclick="fecharScanner(${modalEstaAberto})">Cancelar</button>
+  `;
+  document.getElementById('modal-overlay').classList.remove('hidden');
 
   Quagga.init({
     inputStream: {
@@ -1081,7 +1087,13 @@ function abrirScanner(campoDestino, callback) {
     locate: true,
   }, err => {
     if (err) {
-      fecharScanner();
+      _fecharScannerStream();
+      // Restaura modal anterior
+      if (modalEstaAberto) {
+        document.getElementById('modal-content').innerHTML = modalAnterior;
+      } else {
+        fecharModal();
+      }
       toast('❌ Erro ao acessar câmera: ' + err);
       return;
     }
@@ -1089,41 +1101,45 @@ function abrirScanner(campoDestino, callback) {
   });
 
   Quagga.onDetected(result => {
-    if (lido) return; // ignora leituras extras
+    if (lido) return;
     const codigo = result.codeResult.code;
     if (!codigo) return;
     lido = true;
 
-    // Para o scanner sem fechar o modal ainda
-    try { Quagga.stop(); } catch(_) {}
-    if (scannerStream) {
-      scannerStream.getTracks().forEach(t => t.stop());
-      scannerStream = null;
-    }
+    _fecharScannerStream();
 
-    // Fecha o modal
-    document.getElementById('modal-overlay').classList.add('hidden');
+    // Restaura o modal anterior ou fecha
+    if (modalEstaAberto) {
+      document.getElementById('modal-content').innerHTML = modalAnterior;
+    } else {
+      document.getElementById('modal-overlay').classList.add('hidden');
+    }
 
     // Preenche o campo
-    const campo = document.getElementById(campoDestino);
-    if (campo) campo.value = codigo;
-
-    toast('✅ Código lido: ' + codigo);
-
-    // Executa callback se existir
-    if (typeof callback === 'function') {
-      setTimeout(() => callback(), 300);
-    }
+    setTimeout(() => {
+      const campo = document.getElementById(campoDestino);
+      if (campo) {
+        campo.value = codigo;
+        toast('✅ Código lido: ' + codigo);
+      }
+      if (typeof callback === 'function') callback();
+    }, 100);
   });
 }
 
-function fecharScanner() {
+function _fecharScannerStream() {
   try { Quagga.stop(); } catch(_) {}
   if (scannerStream) {
     scannerStream.getTracks().forEach(t => t.stop());
     scannerStream = null;
   }
-  fecharModal();
+}
+
+function fecharScanner(restaurarModal = false) {
+  _fecharScannerStream();
+  if (!restaurarModal) {
+    fecharModal();
+  }
 }
 // ══════════════════════════════════════════
 // FORMATADORES
