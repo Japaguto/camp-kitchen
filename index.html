@@ -37,7 +37,7 @@
   .tela { display: none; padding: 20px; }
   .tela.ativa { display: block; }
 
-  .card { background: var(--card); border-radius: 16px; padding: 24px; margin-bottom: 16px; box-shadow: var(--shadow); }
+  .card { background: var(--card); border-radius: 16px; padding: 24px; margin-bottom: 16px; box-shadow: var(--shadow); overflow: hidden; }
   .card-title { font-size: 16px; color: var(--muted); margin-bottom: 6px; }
   .card-value { font-size: 32px; font-weight: 700; color: var(--dark); }
 
@@ -60,7 +60,7 @@
 
   .form-group { margin-bottom: 20px; }
   .form-label { font-size: 15px; font-weight: 600; color: var(--muted); margin-bottom: 8px; display: block; text-transform: uppercase; letter-spacing: .5px; }
-  .form-control { width: 100%; padding: 16px 18px; border: 1.5px solid var(--border); border-radius: 14px; font-size: 18px; background: var(--card); outline: none; transition: border .2s; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+  .form-control { width: 100%; padding: 16px 18px; border: 1.5px solid var(--border); border-radius: 14px; font-size: 18px; background: var(--card); outline: none; transition: border .2s; max-width: 100%; overflow: hidden; text-overflow: ellipsis; box-sizing: border-box; }
   input[type="date"].form-control { font-size: 16px; }
   .form-control:focus { border-color: var(--green); }
   select.form-control { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath fill='%23888' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 18px center; }
