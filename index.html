@@ -849,6 +849,13 @@ function setBalancoTab(tab, btn) {
 }
 
 async function carregarBalanco() {
+  // Garante que começa na aba Contagem
+  document.getElementById('balanco-contagem').classList.remove('hidden');
+  document.getElementById('balanco-historico').classList.add('hidden');
+  document.querySelectorAll('#balanco-tabs .toggle-opt').forEach((b, i) => {
+    b.classList.toggle('active', i === 0);
+  });
+
   const hoje = new Date().toISOString().split('T')[0];
   document.getElementById('balanco-data').value = hoje;
   document.getElementById('lista-balanco').innerHTML = '';
@@ -953,15 +960,19 @@ async function carregarHistoricoBalanco() {
   }
 
   const porData = {};
-  balancos.forEach(b => {
-    if (!porData[b.data]) porData[b.data] = [];
-    porData[b.data].push(b);
-  });
+balancos.forEach(b => {
+  const chave = b.data ? b.data.toString().substring(0, 10) : 'sem-data';
+  if (!porData[chave]) porData[chave] = [];
+  porData[chave].push(b);
+});
 
-  let html = '';
-  Object.entries(porData).forEach(([data, itens]) => {
-    const dt      = new Date(data + 'T12:00:00');
-    const dataFmt = `${String(dt.getDate()).padStart(2,'0')}/${String(dt.getMonth()+1).padStart(2,'0')}/${dt.getFullYear()}`;
+let html = '';
+Object.entries(porData).sort((a, b) => b[0].localeCompare(a[0])).forEach(([data, itens]) => {
+  // Formata data sem problema de fuso
+  const partes  = data.split('-');
+  const dataFmt = partes.length === 3
+    ? `${partes[2]}/${partes[1]}/${partes[0]}`
+    : data;
     html += `<div class="section-title">📅 ${dataFmt}</div><div class="card" style="margin-bottom:4px">`;
     itens.forEach(b => {
       const dif    = parseFloat(b.diferenca) || 0;
