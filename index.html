@@ -488,13 +488,17 @@ async function carregarPainel() {
 
 async function carregarIngredientes() {
   loading(true, 'Carregando ingredientes...');
-  const res = await api('dados-iniciais');
+  const [resIng, resForn, resSkus] = await Promise.all([
+    api('ingredientes', 'GET', { status: 'completo' }),
+    api('fornecedores'),
+    api('skus'),
+  ]);
   loading(false);
-  if (res.ok) {
-    state.ingredientes = res.dados.ingredientes || [];
-    state.fornecedores = res.dados.fornecedores || [];
-    state.skus         = res.dados.skus         || [];
-  }
+
+  if (resIng.ok)  state.ingredientes = resIng.dados;
+  if (resForn.ok) state.fornecedores = resForn.dados;
+  if (resSkus.ok) state.skus         = resSkus.dados;
+
   renderIngredientes();
 }
   
@@ -1162,14 +1166,15 @@ function formatarBase(qtd) {
 
 async function init() {
   loading(true, 'Iniciando...');
-  const res = await api('dados-iniciais');
+  const [resIng, resForn, resSkus] = await Promise.all([
+    api('ingredientes', 'GET', { status: 'completo' }),
+    api('fornecedores'),
+    api('skus'),
+  ]);
+  if (resIng.ok)  state.ingredientes = resIng.dados;
+  if (resForn.ok) state.fornecedores = resForn.dados;
+  if (resSkus.ok) state.skus         = resSkus.dados;
   loading(false);
-
-  if (res.ok) {
-    state.ingredientes = res.dados.ingredientes || [];
-    state.fornecedores = res.dados.fornecedores || [];
-    state.skus         = res.dados.skus         || [];
-  }
   carregarPainel();
 }
 
