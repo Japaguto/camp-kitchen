@@ -1051,19 +1051,25 @@ async function abrirScanner(campoDestino, callback) {
     <button class="modal-close" onclick="fecharScanner()">×</button>
     <div class="modal-title">📷 Escanear código</div>
     <div class="barcode-box">
-      <video id="barcode-video" autoplay playsinline></video>
+      <video id="barcode-video" autoplay playsinline muted></video>
       <div class="barcode-line"></div>
     </div>
-    <p style="text-align:center;color:var(--muted);font-size:13px;margin-top:12px">Aponte a câmera para o código de barras</p>
+    <p style="text-align:center;color:var(--muted);font-size:16px;margin-top:16px">Aponte para o código de barras</p>
+    <button class="btn btn-outline" style="margin-top:12px" onclick="fecharScanner()">Cancelar</button>
   `);
 
   try {
-    scannerStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-    const video   = document.getElementById('barcode-video');
-    video.srcObject = scannerStream;
+    scannerStream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
+    });
 
+    const video = document.getElementById('barcode-video');
+    video.srcObject = scannerStream;
+    await video.play();
+
+    // Tenta BarcodeDetector primeiro (Android/Chrome)
     if ('BarcodeDetector' in window) {
-      const detector = new BarcodeDetector({ formats: ['ean_13', 'ean_8', 'code_128', 'upc_a'] });
+      const detector  = new BarcodeDetector({ formats: ['ean_13','ean_8','code_128','upc_a','upc_e'] });
       const intervalo = setInterval(async () => {
         try {
           const barcodes = await detector.detect(video);
@@ -1072,13 +1078,34 @@ async function abrirScanner(campoDestino, callback) {
             const codigo = barcodes[0].rawValue;
             fecharScanner();
             document.getElementById(campoDestino).value = codigo;
+            toast('✅ Código lido: ' + codigo);
             if (callback) callback();
           }
         } catch(_) {}
       }, 300);
+
     } else {
-      toast('⚠️ Câmera aberta. BarcodeDetector não suportado — digite o código manualmente.');
+      // iPhone/Safari — usa ZXing
+      const script    = document.createElement('script');
+      script.src      = 'https://unpkg.com/@zxing/library@0.19.1/umd/index.min.js';
+      script.onload   = () => {
+        const codeReader = new ZXing.BrowserMultiFormatReader();
+        codeReader.decodeFromVideoElement(video, (result, err) => {
+          if (result) {
+            codeReader.reset();
+            fecharScanner();
+            document.getElementById(campoDestino).value = result.getText();
+            toast('✅ Código lido: ' + result.getText());
+            if (callback) callback();
+          }
+        });
+
+        // Guarda referência para parar depois
+        window._zxingReader = codeReader;
+      };
+      document.head.appendChild(script);
     }
+
   } catch(e) {
     fecharScanner();
     toast('❌ Sem permissão para câmera. Digite o código manualmente.');
@@ -1086,6 +1113,10 @@ async function abrirScanner(campoDestino, callback) {
 }
 
 function fecharScanner() {
+  if (window._zxingReader) {
+    window._zxingReader.reset();
+    window._zxingReader = null;
+  }
   if (scannerStream) {
     scannerStream.getTracks().forEach(t => t.stop());
     scannerStream = null;
