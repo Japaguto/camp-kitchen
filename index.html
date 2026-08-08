@@ -272,6 +272,10 @@
       </div>
     </div>
     <div class="form-group">
+      <label class="form-label">Data da compra</label>
+      <input class="form-control" type="date" id="compra-data" style="font-size:15px;padding:12px 4px">
+    </div>
+    <div class="form-group">
       <label class="form-label">Nota fiscal (opcional)</label>
       <input class="form-control" id="compra-nf" placeholder="Número da NF">
     </div>
@@ -720,6 +724,10 @@ function selecionarSkuParaCompra(sku) {
     </div>`;
   document.getElementById('compra-sku-info').classList.remove('hidden');
   document.getElementById('compra-form').classList.remove('hidden');
+  // Preenche data com hoje se ainda não preenchida
+  if (!document.getElementById('compra-data').value) {
+    document.getElementById('compra-data').value = new Date().toISOString().split('T')[0];
+  }
   calcularTotalCompra();
 }
 
@@ -728,6 +736,7 @@ function limparSkuCompra() {
   document.getElementById('compra-sku-info').classList.add('hidden');
   document.getElementById('compra-form').classList.add('hidden');
   document.getElementById('compra-barcode').value = '';
+  document.getElementById('compra-data').value    = '';
 }
 
 function setDestino(dest) {
@@ -765,6 +774,7 @@ async function confirmarCompra() {
     qtd_embalagens:  qtd,
     preco_pago_unit: precoUnit,
     destino:         state.compraDestino,
+    data:            document.getElementById('compra-data').value,
     nota_fiscal:     document.getElementById('compra-nf').value,
     usuario:         state.usuario ? state.usuario.nome : 'app',
   });
