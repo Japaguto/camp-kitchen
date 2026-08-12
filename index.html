@@ -384,6 +384,9 @@ let state = {
   ingredientes: [], fornecedores: [], skus: [],
   compras: [],
   painel: null,
+  saldosTransferencia: {},
+  saldosBalanco: {},
+  dataBalancoCalculada: null,
   filtroStatus: 'todos', compraSkuSelecionado: null,
   compraDestino: 'estoque', telaAtual: 'tela-painel', telaAnterior: null,
   carregado: {
@@ -941,13 +944,31 @@ async function calcularRequisicao() {
 }
 
 async function confirmarRequisicao(itens, dataFim) {
-  loading(true, 'Enviando requisição...');
-  for (const item of itens) {
-    if (item.sugerido > 0) {
-      await api('requisicoes', 'POST', { ingredient_id: item.ingredient_id, qtd_solicitada_base: item.sugerido, data_necessidade: dataFim, usuario: 'app' });
-    }
+  const itensValidos = itens
+    .filter(item => Number(item.sugerido) > 0)
+    .map(item => ({
+      ingredient_id: item.ingredient_id,
+      qtd_solicitada_base: Number(item.sugerido),
+    }));
+
+  if (itensValidos.length === 0) {
+    toast('⚠️ Nenhum item válido para enviar');
+    return;
   }
+
+  loading(true, 'Enviando requisição...');
+  const res = await api('requisicoes/lote', 'POST', {
+    data_necessidade: dataFim,
+    usuario: state.usuario ? state.usuario.nome : 'app',
+    itens: itensValidos,
+  });
   loading(false);
+
+  if (!res.ok) {
+    toast('❌ Erro: ' + res.erro);
+    return;
+  }
+
   toast('✅ Requisição enviada!');
   document.getElementById('req-resultado').innerHTML = '';
   document.getElementById('req-data-fim').value      = '';
@@ -961,6 +982,7 @@ async function carregarTransferencia() {
   if (!res.ok) { toast('❌ Erro ao carregar saldos'); return; }
 
   const saldos = res.dados;
+  state.saldosTransferencia = saldos;
   let html     = '';
   let temItens = false;
 
@@ -1002,31 +1024,57 @@ function validarTransferencia(ingId, estoqueMax) {
 }
 
 async function confirmarTransferencia() {
-  const saldosRes = await api('saldos');
-  if (!saldosRes.ok) return;
   const itens = [];
-  Object.entries(saldosRes.dados).forEach(([ingId, saldo]) => {
+  let erroSaldo = null;
+
+  for (const [ingId, saldo] of Object.entries(state.saldosTransferencia)) {
     const input = document.getElementById('trf-' + ingId);
-    if (!input || !input.value) return;
+    if (!input || !input.value) continue;
+
     const val = parseFloat(input.value) || 0;
-    if (val <= 0) return;
-    itens.push({ ingredient_id: ingId, qtd: val });
-  });
-  if (itens.length === 0) { toast('⚠️ Informe pelo menos uma quantidade'); return; }
-  loading(true, 'Registrando transferências...');
-  for (const item of itens) {
-    const resEnvio = await api('transferencias/envio', 'POST', {
-      ingredient_id: item.ingredient_id, qtd_enviada_base: item.qtd, usuario: 'app',
-    });
-    if (resEnvio.ok && resEnvio.dados.transf_id) {
-      await api('transferencias/recebimento', 'POST', {
-        transf_id: resEnvio.dados.transf_id, qtd_recebida_base: item.qtd, usuario: 'app',
-      });
+    if (val <= 0) continue;
+
+    const estoque = parseFloat(saldo.estoque) || 0;
+    if (val > estoque) {
+      const ing = state.ingredientes.find(i =>
+        i.ingredient_id === ingId
+      );
+      erroSaldo = ing ? ing.nome : ingId;
+      break;
     }
+
+    itens.push({
+      ingredient_id: ingId,
+      qtd_base: val,
+      req_id: '',
+    });
   }
+
+  if (erroSaldo) {
+    toast(`⚠️ Quantidade acima do disponível para ${erroSaldo}`);
+    return;
+  }
+
+  if (itens.length === 0) {
+    toast('⚠️ Informe pelo menos uma quantidade');
+    return;
+  }
+
+  loading(true, 'Registrando transferências...');
+  const res = await api('transferencias/direta-lote', 'POST', {
+    usuario: state.usuario ? state.usuario.nome : 'app',
+    itens,
+  });
   loading(false);
+
+  if (!res.ok) {
+    toast('❌ Erro: ' + res.erro);
+    return;
+  }
+
+  invalidarDados('painel');
   toast('✅ Transferência realizada!');
-  carregarTransferencia();
+  await carregarTransferencia();
 }
 
 // ── BALANÇO
@@ -1061,6 +1109,8 @@ async function calcularBalanco() {
   if (!res.ok) { toast('❌ Erro ao carregar saldos'); return; }
 
   const saldos = res.dados;
+  state.saldosBalanco = saldos;
+  state.dataBalancoCalculada = data;
   let html     = '';
   let temItens = false;
 
@@ -1108,29 +1158,45 @@ function atualizarDifBalanco(ingId, esperado, unidade) {
 }
 
 async function confirmarBalanco() {
-  const data      = document.getElementById('balanco-data').value;
-  const saldosRes = await api('saldos', 'GET', { data });
-  if (!saldosRes.ok) return;
+  const data = document.getElementById('balanco-data').value;
+
+  if (!state.dataBalancoCalculada ||
+      data !== state.dataBalancoCalculada) {
+    toast('⚠️ A data foi alterada. Calcule o esperado novamente.');
+    return;
+  }
 
   const itens = [];
-  Object.entries(saldosRes.dados).forEach(([ingId, saldo]) => {
+  Object.entries(state.saldosBalanco).forEach(([ingId]) => {
     const input = document.getElementById('bal-' + ingId);
     if (!input || input.value === '') return;
     const val    = parseFloat(input.value);
     const motivo = document.getElementById('bal-motivo-' + ingId)?.value || '';
     if (isNaN(val)) return;
-    itens.push({ ingredient_id: ingId, qtd: val, motivo });
+    itens.push({
+      ingredient_id: ingId,
+      qtd_contada_base: val,
+      motivo,
+    });
   });
 
   if (itens.length === 0) { toast('⚠️ Preencha ao menos um item'); return; }
   loading(true, 'Salvando balanço...');
-  for (const item of itens) {
-    await api('balancos', 'POST', {
-      data, ingredient_id: item.ingredient_id,
-      qtd_contada_base: item.qtd, motivo: item.motivo, usuario: 'app',
-    });
-  }
+  const res = await api('balancos/lote', 'POST', {
+    data,
+    usuario: state.usuario ? state.usuario.nome : 'app',
+    itens,
+  });
   loading(false);
+
+  if (!res.ok) {
+    toast('❌ Erro: ' + res.erro);
+    return;
+  }
+
+  invalidarDados('painel');
+  state.saldosBalanco = {};
+  state.dataBalancoCalculada = null;
   toast('✅ Balanço salvo com sucesso!');
   document.getElementById('lista-balanco').innerHTML = '';
   document.getElementById('btn-confirmar-balanco').classList.add('hidden');
