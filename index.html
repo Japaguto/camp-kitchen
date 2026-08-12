@@ -465,16 +465,19 @@ function voltarTela() {
 
 // ── PAINEL
 async function carregarPainel() {
-  const [painel, alertas] = await Promise.all([api('painel'), api('alertas')]);
+  const painel = await api('painel');
   if (painel.ok) {
     const d = painel.dados;
     document.getElementById('pan-cobertura').textContent = d.cobertura_pct + '%';
     document.getElementById('pan-custo').textContent     = formatarMoeda(d.custo_total);
     document.getElementById('pan-sem-sku').textContent   = d.alertas_sem_sku;
     document.getElementById('pan-criticos').textContent  = d.alertas_criticos;
-  }
-  if (alertas.ok) {
-    const a = alertas.dados;
+
+    const a = d.alertas || {
+      sem_sku: [],
+      sem_compra: [],
+      abaixo_do_minimo: [],
+    };
     let html = '';
     if (a.sem_sku.length > 0)          html += `<div class="alerta warn"><span>🟡</span><p>${a.sem_sku.length} ingredientes sem SKU cadastrado</p></div>`;
     if (a.sem_compra.length > 0)       html += `<div class="alerta warn"><span>🟠</span><p>${a.sem_compra.length} ingredientes sem compra registrada</p></div>`;
