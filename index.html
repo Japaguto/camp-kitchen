@@ -387,6 +387,20 @@ let state = {
   saldosTransferencia: {},
   saldosBalanco: {},
   dataBalancoCalculada: null,
+  indices: {
+    ingredientePorId: new Map(),
+    skuPorId: new Map(),
+    fornecedorPorId: new Map(),
+    skusPorIngrediente: new Map(),
+    skuPorBarcode: new Map(),
+  },
+  paginacao: {
+    compras: {
+      offset: 0,
+      temMais: false,
+      carregando: false,
+    },
+  },
   filtroStatus: 'todos', compraSkuSelecionado: null,
   compraDestino: 'estoque', telaAtual: 'tela-painel', telaAnterior: null,
   carregado: {
@@ -461,6 +475,59 @@ function invalidarDados(...chaves) {
   });
 }
 
+function reconstruirIndicesDadosIniciais() {
+  const ingredientePorId = new Map();
+  const skuPorId = new Map();
+  const fornecedorPorId = new Map();
+  const skusPorIngrediente = new Map();
+  const skuPorBarcode = new Map();
+
+  state.ingredientes.forEach(ingrediente => {
+    const id = String(ingrediente.ingredient_id);
+    if (!ingredientePorId.has(id)) {
+      ingredientePorId.set(id, ingrediente);
+    }
+  });
+
+  state.fornecedores.forEach(fornecedor => {
+    const id = String(fornecedor.fornecedor_id);
+    if (!fornecedorPorId.has(id)) {
+      fornecedorPorId.set(id, fornecedor);
+    }
+  });
+
+  state.skus.forEach(sku => {
+    const skuId = String(sku.sku_id);
+    const ingredientId = String(sku.ingredient_id);
+    const barcode = sku.codigo_barras === null ||
+      sku.codigo_barras === undefined
+      ? ''
+      : String(sku.codigo_barras);
+
+    if (!skuPorId.has(skuId)) {
+      skuPorId.set(skuId, sku);
+    }
+
+    if (!skusPorIngrediente.has(ingredientId)) {
+      skusPorIngrediente.set(ingredientId, []);
+    }
+    skusPorIngrediente.get(ingredientId).push(sku);
+
+    // Preserva Array.find(): em duplicidade, o primeiro SKU vence.
+    if (barcode && !skuPorBarcode.has(barcode)) {
+      skuPorBarcode.set(barcode, sku);
+    }
+  });
+
+  state.indices = {
+    ingredientePorId,
+    skuPorId,
+    fornecedorPorId,
+    skusPorIngrediente,
+    skuPorBarcode,
+  };
+}
+
 async function garantirDadosIniciais() {
   if (state.carregado.dadosIniciais && !state.sujo.dadosIniciais) {
     return true;
@@ -477,6 +544,7 @@ async function garantirDadosIniciais() {
     state.ingredientes = res.dados.ingredientes || [];
     state.fornecedores = res.dados.fornecedores || [];
     state.skus         = res.dados.skus || [];
+    reconstruirIndicesDadosIniciais();
     state.carregado.dadosIniciais = true;
     state.sujo.dadosIniciais      = false;
     return true;
@@ -601,13 +669,17 @@ function setFiltroStatus(status, btn) {
 function renderIngredientes() {
   const busca  = (document.getElementById('busca-ingrediente').value || '').toLowerCase();
   const status = state.filtroStatus;
-  const skus   = state.skus;
+  const skusPorIngrediente =
+    state.indices.skusPorIngrediente;
 
   let lista = state.ingredientes.filter(ing => {
     const ativo = ing.ativo === true || ing.ativo === 'TRUE' || ing.ativo === 'true';
     if (!ativo) return false;
     if (busca && !ing.nome.toString().toLowerCase().includes(busca)) return false;
-    const temSku    = skus.some(s => s.ingredient_id === ing.ingredient_id);
+    const skusIng = skusPorIngrediente.get(
+      String(ing.ingredient_id)
+    ) || [];
+    const temSku = skusIng.length > 0;
     const temCompra = ing.tem_compra === true || ing.tem_compra === 'TRUE';
     if (status === 'sem_sku'    && temSku)    return false;
     if (status === 'sem_compra' && temCompra) return false;
@@ -616,7 +688,9 @@ function renderIngredientes() {
 
   let html = '';
   lista.forEach(ing => {
-    const skusIng   = skus.filter(s => s.ingredient_id === ing.ingredient_id);
+    const skusIng = skusPorIngrediente.get(
+      String(ing.ingredient_id)
+    ) || [];
     const temSku    = skusIng.length > 0;
     const temCompra = ing.tem_compra === true || ing.tem_compra === 'TRUE';
     const badge     = !temSku ? '<span class="badge badge-warn">Sem SKU</span>'
@@ -638,12 +712,14 @@ function renderIngredientes() {
 }
 
 function abrirIngrediente(ingId) {
-  const ing   = state.ingredientes.find(i => i.ingredient_id === ingId);
-  const skus  = state.skus.filter(s => s.ingredient_id === ingId);
-  const forns = state.fornecedores;
+  const ing = state.indices.ingredientePorId.get(String(ingId));
+  const skus = state.indices.skusPorIngrediente.get(
+    String(ingId)
+  ) || [];
+  const fornecedorPorId = state.indices.fornecedorPorId;
 
   let skusHtml = skus.map(s => {
-    const forn = forns.find(f => f.fornecedor_id === s.fornecedor_id);
+    const forn = fornecedorPorId.get(String(s.fornecedor_id));
     return `<div class="card" style="margin-bottom:8px;position:relative">
       <div style="font-weight:700">${s.marca}</div>
       <div style="font-size:13px;color:var(--muted)">${s.qtd_embalagem} ${s.unidade_embalagem} · ${forn ? forn.nome : '—'}</div>
@@ -697,7 +773,7 @@ async function salvarNovoIngrediente() {
 }
 
 function abrirModalNovoSku(ingId) {
-  const ing        = state.ingredientes.find(i => i.ingredient_id === ingId);
+  const ing = state.indices.ingredientePorId.get(String(ingId));
   const optsForns  = state.fornecedores.map(f => `<option value="${f.fornecedor_id}">${f.nome}</option>`).join('');
   abrirModal(`
     <button class="modal-close" onclick="fecharModal()">×</button>
@@ -788,8 +864,8 @@ async function buscarSkuPorBarcode() {
   if (!barcode) return;
 
   if (state.carregado.dadosIniciais && !state.sujo.dadosIniciais) {
-    const skuLocal = state.skus.find(s =>
-      String(s.codigo_barras) === String(barcode)
+    const skuLocal = state.indices.skuPorBarcode.get(
+      String(barcode)
     );
 
     if (skuLocal) {
@@ -813,13 +889,19 @@ function buscarSkuPorNome() {
   const busca = (document.getElementById('compra-busca-nome').value || '').toLowerCase();
   if (busca.length < 2) { document.getElementById('compra-sugestoes').innerHTML = ''; return; }
   const resultados = state.skus.filter(s => {
-    const ing = state.ingredientes.find(i => i.ingredient_id === s.ingredient_id);
+    const ing = state.indices.ingredientePorId.get(
+      String(s.ingredient_id)
+    );
     return ing && ing.nome.toLowerCase().includes(busca);
   }).slice(0, 5);
   let html = '';
   resultados.forEach(s => {
-    const ing  = state.ingredientes.find(i => i.ingredient_id === s.ingredient_id);
-    const forn = state.fornecedores.find(f => f.fornecedor_id === s.fornecedor_id);
+    const ing = state.indices.ingredientePorId.get(
+      String(s.ingredient_id)
+    );
+    const forn = state.indices.fornecedorPorId.get(
+      String(s.fornecedor_id)
+    );
     html += `<div class="item" style="margin-bottom:6px" onclick="selecionarSkuParaCompra(${JSON.stringify(s).replace(/"/g,'&quot;')})">
       <div class="item-body">
         <div class="item-title">${ing ? ing.nome : ''} — ${s.marca}</div>
@@ -832,8 +914,12 @@ function buscarSkuPorNome() {
 
 function selecionarSkuParaCompra(sku) {
   state.compraSkuSelecionado = sku;
-  const ing  = state.ingredientes.find(i => i.ingredient_id === sku.ingredient_id);
-  const forn = state.fornecedores.find(f => f.fornecedor_id === sku.fornecedor_id);
+  const ing = state.indices.ingredientePorId.get(
+    String(sku.ingredient_id)
+  );
+  const forn = state.indices.fornecedorPorId.get(
+    String(sku.fornecedor_id)
+  );
   document.getElementById('compra-sugestoes').innerHTML = '';
   document.getElementById('compra-busca-nome').value    = '';
   document.getElementById('compra-sku-info').innerHTML  = `
@@ -903,6 +989,9 @@ async function confirmarCompra() {
 
   if (res.ok) {
     invalidarDados('compras', 'painel', 'dadosIniciais');
+    state.compras = [];
+    state.paginacao.compras.offset = 0;
+    state.paginacao.compras.temMais = false;
     toast('✅ Compra registrada! ' + (res.dados.qtd_total || ''));
     limparSkuCompra();
     document.getElementById('compra-qtd').value         = 1;
@@ -930,7 +1019,9 @@ async function calcularRequisicao() {
   }
   let html = '<div class="section-title">Itens necessários</div>';
   itens.forEach(item => {
-    const ing  = state.ingredientes.find(i => i.ingredient_id === item.ingredient_id);
+    const ing = state.indices.ingredientePorId.get(
+      String(item.ingredient_id)
+    );
     const nome = ing ? ing.nome : item.ingredient_id;
     const cor  = item.sugerido < item.falta ? 'var(--red)' : 'var(--green)';
     html += `<div class="card" style="margin-bottom:8px">
@@ -989,7 +1080,7 @@ async function carregarTransferencia() {
   Object.entries(saldos).forEach(([ingId, saldo]) => {
     const estoque = parseFloat(saldo.estoque) || 0;
     if (estoque <= 0) return;
-    const ing = state.ingredientes.find(i => i.ingredient_id === ingId);
+    const ing = state.indices.ingredientePorId.get(String(ingId));
     if (!ing) return;
     temItens = true;
     const estoqueFmt = estoque >= 1000
@@ -1036,8 +1127,8 @@ async function confirmarTransferencia() {
 
     const estoque = parseFloat(saldo.estoque) || 0;
     if (val > estoque) {
-      const ing = state.ingredientes.find(i =>
-        i.ingredient_id === ingId
+      const ing = state.indices.ingredientePorId.get(
+        String(ingId)
       );
       erroSaldo = ing ? ing.nome : ingId;
       break;
@@ -1117,7 +1208,7 @@ async function calcularBalanco() {
   Object.entries(saldos).forEach(([ingId, saldo]) => {
     const cozinha = parseFloat(saldo.cozinha) || 0;
     if (cozinha <= 0) return;
-    const ing = state.ingredientes.find(i => i.ingredient_id === ingId);
+    const ing = state.indices.ingredientePorId.get(String(ingId));
     if (!ing) return;
     temItens = true;
     const esperadoFmt = cozinha >= 1000
@@ -1562,24 +1653,57 @@ async function init() {
   }
 }
 
-async function carregarHistoricoCompras() {
-  if (!state.carregado.compras || state.sujo.compras) {
-    const res = await api('compras');
+async function carregarHistoricoCompras(carregarMais = false) {
+  const paginacao = state.paginacao.compras;
+  if (paginacao.carregando) return;
+
+  if (!carregarMais &&
+      state.carregado.compras &&
+      !state.sujo.compras) {
+    renderHistoricoCompras();
+    return;
+  }
+
+  if (carregarMais && !paginacao.temMais) return;
+
+  if (!carregarMais) {
+    state.compras = [];
+    paginacao.offset = 0;
+    paginacao.temMais = false;
+  }
+
+  paginacao.carregando = true;
+  try {
+    const res = await api('compras', 'GET', {
+      limit: 50,
+      offset: paginacao.offset,
+    });
+
     if (!res.ok) return;
 
-    state.compras           = res.dados || [];
+    const pagina = res.dados || {};
+    const novos = pagina.itens || [];
+
+    state.compras = carregarMais
+      ? state.compras.concat(novos)
+      : novos;
     state.carregado.compras = true;
-    state.sujo.compras      = false;
+    state.sujo.compras = false;
+    paginacao.temMais = pagina.tem_mais === true;
+    paginacao.offset =
+      pagina.proximo_offset === null ||
+      pagina.proximo_offset === undefined
+        ? state.compras.length
+        : pagina.proximo_offset;
+  } finally {
+    paginacao.carregando = false;
   }
 
   renderHistoricoCompras();
 }
 
 function renderHistoricoCompras() {
-  const compras      = state.compras;
-  const skus         = state.skus;
-  const ingredientes = state.ingredientes;
-  const fornecedores = state.fornecedores;
+  const compras = state.compras;
 
   if (!compras || compras.length === 0) {
     document.getElementById('historico-compras').innerHTML =
@@ -1587,13 +1711,19 @@ function renderHistoricoCompras() {
     return;
   }
 
-  const ordenadas = [...compras].sort((a, b) => new Date(b.data) - new Date(a.data));
-
   let html = '';
-  ordenadas.forEach(c => {
-    const sku  = skus.find(s => s.sku_id === c.sku_id);
-    const ing  = sku ? ingredientes.find(i => i.ingredient_id === sku.ingredient_id) : null;
-    const forn = sku ? fornecedores.find(f => f.fornecedor_id === sku.fornecedor_id) : null;
+  compras.forEach(c => {
+    const sku = state.indices.skuPorId.get(String(c.sku_id));
+    const ing = sku
+      ? state.indices.ingredientePorId.get(
+          String(sku.ingredient_id)
+        )
+      : null;
+    const forn = sku
+      ? state.indices.fornecedorPorId.get(
+          String(sku.fornecedor_id)
+        )
+      : null;
 
     const partes  = c.data ? c.data.toString().substring(0, 10).split('-') : [];
     const dataFmt = partes.length === 3 ? `${partes[2]}/${partes[1]}/${partes[0]}` : c.data;
@@ -1620,6 +1750,11 @@ function renderHistoricoCompras() {
         </div>
       </div>`;
   });
+
+  if (state.paginacao.compras.temMais) {
+    html += `<button class="btn btn-outline" style="margin-top:12px"
+      onclick="carregarHistoricoCompras(true)">Carregar mais</button>`;
+  }
 
   document.getElementById('historico-compras').innerHTML = html;
 }
